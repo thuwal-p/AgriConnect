@@ -2,6 +2,7 @@
 #define CROP_H
 
 #include <string>
+using namespace std;
 
 class Crop
 {

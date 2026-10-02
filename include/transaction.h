@@ -24,11 +24,18 @@ public:
     Transaction(int id, string farmer, string buyer,
                 string crop, float qty, float p);
 
+    //transaction operations
     void displayTransaction();
     void updateStatus(string newStatus);
     void completeTransaction();
 
+    //getters
     int getTransactionId();
+    string getFarmerName();
+    string getBuyerName();
+    string getCropName();
+    float getQuantity();
+    float getPrice();
     string getStatus();
 };
 
@@ -38,10 +45,26 @@ private:
     vector<Transaction> transactions;
 
 public:
+   // Add transaction
     void addTransaction(Transaction t);
+
+    // Display all transactions
     void displayAllTransactions();
+
+    // Update transaction status
     void updateTransactionStatus(int id, string status);
+
+    // Complete transaction
     void completeTransaction(int id);
+
+    // Search transaction
+    void searchTransaction(int id);
+
+     // Search transaction
+    void searchTransaction(int id);
+
+    // Delete transaction
+    void deleteTransaction(int id);
 };
 
 #endif

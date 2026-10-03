@@ -7,8 +7,7 @@
 
 using namespace std;
 
-class Transaction
-{
+class Transaction{
 private:
     int transactionId;
     string farmerName;
@@ -21,8 +20,7 @@ private:
 public:
     Transaction();
 
-    Transaction(int id, string farmer, string buyer,
-                string crop, float qty, float p);
+    Transaction(int id, string farmer, string buyer, string crop, float qty, float pr);
 
     //transaction operations
     void displayTransaction();
@@ -56,9 +54,6 @@ public:
 
     // Complete transaction
     void completeTransaction(int id);
-
-    // Search transaction
-    void searchTransaction(int id);
 
      // Search transaction
     void searchTransaction(int id);

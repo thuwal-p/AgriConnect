@@ -43,22 +43,16 @@ private:
     vector<Transaction> transactions;
 
 public:
-   // Add transaction
     void addTransaction(Transaction t);
 
-    // Display all transactions
     void displayAllTransactions();
 
-    // Update transaction status
     void updateTransactionStatus(int id, string status);
 
-    // Complete transaction
     void completeTransaction(int id);
 
-     // Search transaction
     void searchTransaction(int id);
 
-    // Delete transaction
     void deleteTransaction(int id);
 };
 

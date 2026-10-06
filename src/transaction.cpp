@@ -44,3 +44,49 @@ void Transaction::completeTransaction(){
     this->status = "Completed";
     cout << "Transaction completed successfully." << endl;
 }
+
+void TransactionManager::addTransaction(Transaction t){
+
+    this->transactions.push_back(t);
+    cout << "Transaction added successfully." << endl;
+}
+
+void TransactionManager::displayAllTransactions(){
+    int n = this->transactions.size();
+
+    for(int i = 0; i < n; i++){
+        this->transactions[i].displayTransaction();
+        cout << endl;
+    }
+}
+
+int Transaction::getTransactionId(){
+
+    return this->transactionId;
+}
+
+string Transaction::getStatus(){
+    return this->status;
+}
+
+void TransactionManager::updateTransactionStatus(int id, string status){
+    int n =this->transactions.size();
+    for(int i = 0; i < n; i++){
+        if(this->transactions[i].getTransactionId() == id){
+            this->transactions[i].updateStatus(status);
+            return;
+        }
+    }
+    cout << "Transaction not found." << endl;
+}
+
+void TransactionManager::completeTransaction(int id){
+    int n =this->transactions.size();
+    for(int i = 0; i < n; i++){
+        if(this->transactions[i].getTransactionId() == id){
+            this->transactions[i].completeTransaction();
+            return;
+        }
+    }
+    cout << "Transaction not found." << endl;
+}

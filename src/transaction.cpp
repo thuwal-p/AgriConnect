@@ -44,3 +44,18 @@ void Transaction::completeTransaction(){
     this->status = "Completed";
     cout << "Transaction completed successfully." << endl;
 }
+
+void TransactionManager::addTransaction(Transaction t){
+
+    this->transactions.push_back(t);
+    cout << "Transaction added successfully." << endl;
+}
+
+void TransactionManager::displayAllTransactions(){
+    int n = this->transactions.size();
+
+    for(int i = 0; i < n; i++){
+        this->transactions[i].displayTransaction();
+        cout << endl;
+    }
+}

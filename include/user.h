@@ -4,9 +4,7 @@
 
 #include <iostream>
 #include <string>
-#include <unordered_map>
 #include <fstream>
-
 using namespace std;
 
 class User
@@ -26,18 +24,29 @@ public:
 class UserAuthentication
 {
 private:
-    unordered_map<string, User> farmerUsers;
-    unordered_map<string, User> mandiUsers;
+    string farmerNames[100];
+    string farmerPasswords[100];
+
+    string mandiNames[100];
+    string mandiPasswords[100];
+
+    int farmerCount;
+    int mandiCount;
 
 public:
+    UserAuthentication();
+
     void loadFarmers();
     void loadMandis();
 
-    bool registerFarmer(string username, string password);
-    bool registerMandi(string username, string password);
+    bool farmerLogin(string u, string p);
+    bool mandiLogin(string u, string p);
 
-    bool farmerLogin(string username, string password);
-    bool mandiLogin(string username, string password);
+    bool registerFarmer(string u, string p);
+    bool registerMandi(string u, string p);
 };
 
 #endif
+
+
+

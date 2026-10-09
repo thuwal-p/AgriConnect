@@ -1,5 +1,4 @@
 
-
 #include "../include/user.h"
 
 User::User()
@@ -24,17 +23,27 @@ string User::getPassword()
     return password;
 }
 
+UserAuthentication::UserAuthentication()
+{
+    farmerCount = 0;
+    mandiCount = 0;
+}
+
 void UserAuthentication::loadFarmers()
 {
-    farmerUsers.clear();
-
     ifstream file("farmers.txt");
+    string u, p;
 
-    string username, password;
+    farmerCount = 0;
 
-    while (file >> username >> password)
+    while (file >> u >> p)
     {
-        farmerUsers[username] = User(username, password);
+        if (farmerCount < 100)
+        {
+            farmerNames[farmerCount] = u;
+            farmerPasswords[farmerCount] = p;
+            farmerCount++;
+        }
     }
 
     file.close();
@@ -42,84 +51,128 @@ void UserAuthentication::loadFarmers()
 
 void UserAuthentication::loadMandis()
 {
-    mandiUsers.clear();
-
     ifstream file("mandis.txt");
+    string u, p;
 
-    string username, password;
+    mandiCount = 0;
 
-    while (file >> username >> password)
+    while (file >> u >> p)
     {
-        mandiUsers[username] = User(username, password);
+        if (mandiCount < 100)
+        {
+            mandiNames[mandiCount] = u;
+            mandiPasswords[mandiCount] = p;
+            mandiCount++;
+        }
     }
 
     file.close();
 }
 
-bool UserAuthentication::registerFarmer(string username, string password)
+bool UserAuthentication::farmerLogin(string u, string p)
 {
-    if (username.empty() || password.empty())
-        return false;
+    int i = 0;
 
-    if (farmerUsers.find(username) != farmerUsers.end())
+    while (i < farmerCount)
+    {
+        if (farmerNames[i] == u &&
+            farmerPasswords[i] == p)
+        {
+            return true;
+        }
+
+        i++;
+    }
+
+    return false;
+}
+
+bool UserAuthentication::mandiLogin(string u, string p)
+{
+    int i = 0;
+
+    while (i < mandiCount)
+    {
+        if (mandiNames[i] == u &&
+            mandiPasswords[i] == p)
+        {
+            return true;
+        }
+
+        i++;
+    }
+
+    return false;
+}
+
+bool UserAuthentication::registerFarmer(string u, string p)
+{
+    int i = 0;
+
+    while (i < farmerCount)
+    {
+        if (farmerNames[i] == u)
+        {
+            return false;
+        }
+
+        i++;
+    }
+
+    if (farmerCount >= 100)
+    {
         return false;
+    }
 
     ofstream file("farmers.txt", ios::app);
 
-    if (!file.is_open())
+    if (!file)
+    {
         return false;
+    }
 
-    file << username << " " << password << "\n";
+    file << u << " " << p << "\n";
     file.close();
 
-    farmerUsers[username] = User(username, password);
+    farmerNames[farmerCount] = u;
+    farmerPasswords[farmerCount] = p;
+    farmerCount++;
 
     return true;
 }
 
-bool UserAuthentication::registerMandi(string username, string password)
+bool UserAuthentication::registerMandi(string u, string p)
 {
-    if (username.empty() || password.empty())
-        return false;
+    int i = 0;
 
-    if (mandiUsers.find(username) != mandiUsers.end())
+    while (i < mandiCount)
+    {
+        if (mandiNames[i] == u)
+        {
+            return false;
+        }
+
+        i++;
+    }
+
+    if (mandiCount >= 100)
+    {
         return false;
+    }
 
     ofstream file("mandis.txt", ios::app);
 
-    if (!file.is_open())
+    if (!file)
+    {
         return false;
+    }
 
-    file << username << " " << password << "\n";
+    file << u << " " << p << "\n";
     file.close();
 
-    mandiUsers[username] = User(username, password);
+    mandiNames[mandiCount] = u;
+    mandiPasswords[mandiCount] = p;
+    mandiCount++;
 
     return true;
-}
-
-bool UserAuthentication::farmerLogin(string username, string password)
-{
-    auto it = farmerUsers.find(username);
-
-    if (it != farmerUsers.end() &&
-        it->second.getPassword() == password)
-    {
-        return true;
-    }
-
-    return false;
-}
-
-bool UserAuthentication::mandiLogin(string username, string password)
-{
-    auto it = mandiUsers.find(username);
-
-    if (it != mandiUsers.end() &&
-        it->second.getPassword() == password)
-    {
-        return true;
-    }
-
-    return false;
 }

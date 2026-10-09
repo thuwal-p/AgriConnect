@@ -19,65 +19,77 @@ int main()
         cout << "3. Mandi Login\n";
         cout << "4. Mandi Registration\n";
         cout << "5. Exit\n";
-        cout << "Enter your choice: ";
 
-        if (!(cin >> choice))
-        {
-            cout << "Invalid input.\n";
-            break;
-        }
+        cout << "Enter your choice: ";
+        cin >> choice;
 
         if (choice == 1)
         {
-            cout << "Enter farmer username: ";
+            cout << "Enter username: ";
             cin >> username;
 
             cout << "Enter password: ";
             cin >> password;
 
             if (auth.farmerLogin(username, password))
+            {
                 cout << "Farmer login successful!\n";
+            }
             else
-                cout << "Invalid farmer username or password.\n";
+            {
+                cout << "Invalid username or password.\n";
+            }
         }
         else if (choice == 2)
         {
-            cout << "Create farmer username: ";
+            cout << "Enter username: ";
             cin >> username;
 
-            cout << "Create password: ";
+            cout << "Enter password: ";
             cin >> password;
 
             if (auth.registerFarmer(username, password))
+            {
                 cout << "Farmer registered successfully!\n";
+            }
             else
-                cout << "Registration failed. Username may already exist or the file could not be opened.\n";
+            {
+                cout << "Registration failed.USERNAME ALREADY EXITS\n";
+            }
         }
         else if (choice == 3)
         {
-            cout << "Enter mandi username: ";
+            cout << "Enter username: ";
             cin >> username;
 
             cout << "Enter password: ";
             cin >> password;
 
             if (auth.mandiLogin(username, password))
+            {
                 cout << "Mandi login successful!\n";
+            }
             else
-                cout << "Invalid mandi username or password.\n";
+            {
+                cout << "Invalid username or password.\n";
+            }
         }
         else if (choice == 4)
         {
-            cout << "Create mandi username: ";
+            cout << "Enter username: ";
             cin >> username;
 
-            cout << "Create password: ";
+            cout << "Enter password: ";
             cin >> password;
 
             if (auth.registerMandi(username, password))
+            {
                 cout << "Mandi registered successfully!\n";
+            }
             else
-                cout << "Registration failed. Username may already exist or the file could not be opened.\n";
+            {
+                cout << "Registration failed.USERNAME ALREADY EXITS\n";
+            }
         }
         else if (choice == 5)
         {
@@ -92,3 +104,5 @@ int main()
 
     return 0;
 }
+
+

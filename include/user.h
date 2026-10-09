@@ -39,6 +39,12 @@ public:
     void loadFarmers();
     void loadMandis();
 
+<<<<<<< HEAD
+=======
+    bool farmerUsernameExists(string u);
+    bool mandiUsernameExists(string u);
+
+>>>>>>> 01d5478 (Improve authentication and registration)
     bool farmerLogin(string u, string p);
     bool mandiLogin(string u, string p);
 

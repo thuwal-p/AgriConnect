@@ -23,17 +23,21 @@ string User::getPassword()
     return password;
 }
 
+<<<<<<< HEAD
 UserAuthentication::UserAuthentication()
 {
     farmerCount = 0;
     mandiCount = 0;
 }
 
+=======
+>>>>>>> 01d5478 (Improve authentication and registration)
 void UserAuthentication::loadFarmers()
 {
     ifstream file("farmers.txt");
     string u, p;
 
+<<<<<<< HEAD
     farmerCount = 0;
 
     while (file >> u >> p)
@@ -44,6 +48,11 @@ void UserAuthentication::loadFarmers()
             farmerPasswords[farmerCount] = p;
             farmerCount++;
         }
+=======
+    while (file >> u >> p)
+    {
+        farmerUsers[u] = User(u, p);
+>>>>>>> 01d5478 (Improve authentication and registration)
     }
 
     file.close();
@@ -54,6 +63,7 @@ void UserAuthentication::loadMandis()
     ifstream file("mandis.txt");
     string u, p;
 
+<<<<<<< HEAD
     mandiCount = 0;
 
     while (file >> u >> p)
@@ -64,11 +74,17 @@ void UserAuthentication::loadMandis()
             mandiPasswords[mandiCount] = p;
             mandiCount++;
         }
+=======
+    while (file >> u >> p)
+    {
+        mandiUsers[u] = User(u, p);
+>>>>>>> 01d5478 (Improve authentication and registration)
     }
 
     file.close();
 }
 
+<<<<<<< HEAD
 bool UserAuthentication::farmerLogin(string u, string p)
 {
     int i = 0;
@@ -85,10 +101,40 @@ bool UserAuthentication::farmerLogin(string u, string p)
     }
 
     return false;
+=======
+bool UserAuthentication::farmerUsernameExists(string u)
+{
+    if (farmerUsers.count(u) == 1)
+        return true;
+    else
+        return false;
+}
+
+bool UserAuthentication::mandiUsernameExists(string u)
+{
+    if (mandiUsers.count(u) == 1)
+        return true;
+    else
+        return false;
+}
+
+bool UserAuthentication::farmerLogin(string u, string p)
+{
+    if (farmerUsers.count(u) == 1)
+    {
+        if (farmerUsers[u].getPassword() == p)
+            return true;
+        else
+            return false;
+    }
+    else
+        return false;
+>>>>>>> 01d5478 (Improve authentication and registration)
 }
 
 bool UserAuthentication::mandiLogin(string u, string p)
 {
+<<<<<<< HEAD
     int i = 0;
 
     while (i < mandiCount)
@@ -103,10 +149,22 @@ bool UserAuthentication::mandiLogin(string u, string p)
     }
 
     return false;
+=======
+    if (mandiUsers.count(u) == 1)
+    {
+        if (mandiUsers[u].getPassword() == p)
+            return true;
+        else
+            return false;
+    }
+    else
+        return false;
+>>>>>>> 01d5478 (Improve authentication and registration)
 }
 
 bool UserAuthentication::registerFarmer(string u, string p)
 {
+<<<<<<< HEAD
     int i = 0;
 
     while (i < farmerCount)
@@ -123,26 +181,39 @@ bool UserAuthentication::registerFarmer(string u, string p)
     {
         return false;
     }
+=======
+    if (farmerUsers.count(u) == 1)
+        return false;
+>>>>>>> 01d5478 (Improve authentication and registration)
 
     ofstream file("farmers.txt", ios::app);
 
     if (!file)
+<<<<<<< HEAD
     {
         return false;
     }
+=======
+        return false;
+>>>>>>> 01d5478 (Improve authentication and registration)
 
     file << u << " " << p << "\n";
     file.close();
 
+<<<<<<< HEAD
     farmerNames[farmerCount] = u;
     farmerPasswords[farmerCount] = p;
     farmerCount++;
+=======
+    farmerUsers[u] = User(u, p);
+>>>>>>> 01d5478 (Improve authentication and registration)
 
     return true;
 }
 
 bool UserAuthentication::registerMandi(string u, string p)
 {
+<<<<<<< HEAD
     int i = 0;
 
     while (i < mandiCount)
@@ -159,20 +230,32 @@ bool UserAuthentication::registerMandi(string u, string p)
     {
         return false;
     }
+=======
+    if (mandiUsers.count(u) == 1)
+        return false;
+>>>>>>> 01d5478 (Improve authentication and registration)
 
     ofstream file("mandis.txt", ios::app);
 
     if (!file)
+<<<<<<< HEAD
     {
         return false;
     }
+=======
+        return false;
+>>>>>>> 01d5478 (Improve authentication and registration)
 
     file << u << " " << p << "\n";
     file.close();
 
+<<<<<<< HEAD
     mandiNames[mandiCount] = u;
     mandiPasswords[mandiCount] = p;
     mandiCount++;
+=======
+    mandiUsers[u] = User(u, p);
+>>>>>>> 01d5478 (Improve authentication and registration)
 
     return true;
 }

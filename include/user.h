@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <string>
+#include <unordered_map>
 #include <fstream>
 using namespace std;
 
@@ -24,27 +25,16 @@ public:
 class UserAuthentication
 {
 private:
-    string farmerNames[100];
-    string farmerPasswords[100];
-
-    string mandiNames[100];
-    string mandiPasswords[100];
-
-    int farmerCount;
-    int mandiCount;
+    unordered_map<string, User> farmerUsers;
+    unordered_map<string, User> mandiUsers;
 
 public:
-    UserAuthentication();
-
     void loadFarmers();
     void loadMandis();
 
-<<<<<<< HEAD
-=======
     bool farmerUsernameExists(string u);
     bool mandiUsernameExists(string u);
 
->>>>>>> 01d5478 (Improve authentication and registration)
     bool farmerLogin(string u, string p);
     bool mandiLogin(string u, string p);
 

@@ -1,3 +1,4 @@
+
 #ifndef USER_H
 #define USER_H
 
@@ -31,6 +32,9 @@ private:
 public:
     void loadFarmers();
     void loadMandis();
+
+    bool registerFarmer(string username, string password);
+    bool registerMandi(string username, string password);
 
     bool farmerLogin(string username, string password);
     bool mandiLogin(string username, string password);

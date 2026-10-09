@@ -1,3 +1,4 @@
+
 #ifndef USER_H
 #define USER_H
 
@@ -5,7 +6,6 @@
 #include <string>
 #include <unordered_map>
 #include <fstream>
-
 using namespace std;
 
 class User
@@ -32,8 +32,17 @@ public:
     void loadFarmers();
     void loadMandis();
 
-    bool farmerLogin(string username, string password);
-    bool mandiLogin(string username, string password);
+    bool farmerUsernameExists(string u);
+    bool mandiUsernameExists(string u);
+
+    bool farmerLogin(string u, string p);
+    bool mandiLogin(string u, string p);
+
+    bool registerFarmer(string u, string p);
+    bool registerMandi(string u, string p);
 };
 
 #endif
+
+
+

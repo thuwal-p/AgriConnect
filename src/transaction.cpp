@@ -71,14 +71,17 @@ string Transaction::getStatus(){
 
 void TransactionManager::updateTransactionStatus(int id, string status){
     int n =this->transactions.size();
-    for(int i = 0; i < n; i++){
-        if(this->transactions[i].getTransactionId() == id){
+    for(int i = 0; i < n; i++)
+    {
+        if(this->transactions[i].getTransactionId() == id) {
+            cout<<"transaction found";
             this->transactions[i].updateStatus(status);
             return;
         }
     }
     cout << "Transaction not found." << endl;
 }
+
 
 void TransactionManager::completeTransaction(int id){
     int n =this->transactions.size();
@@ -90,3 +93,38 @@ void TransactionManager::completeTransaction(int id){
     }
     cout << "Transaction not found." << endl;
 }
+
+void TransactionManager::searchTransaction(int id){
+    int n = this->transactions.size();
+
+    for(int i = 0; i < n; i++){
+        if(this->transactions[i].getTransactionId() == id){
+            cout << "Transaction found." << endl;
+            this->transactions[i].displayTransaction();
+            return;
+        }
+    }
+
+    cout << "Transaction not found";
+}
+
+void TransactionManager::deleteTransaction(int id){
+    int n = this->transactions.size();
+
+    for(int i = 0; i < n; i++){
+        if(this->transactions[i].getTransactionId() == id){
+            for(int j = i; j < n - 1; j++){
+                this->transactions[j] = this->transactions[j + 1];
+            }
+
+            cout << "Transaction deleted successfully." << endl;
+            return;
+        }
+    }
+
+    cout << "Transaction not found." << endl;
+}
+
+
+
+

@@ -2,60 +2,101 @@
 #include "include/user.h"
 #include "include/farmer.h"
 #include "include/mandi.h"
+#include "include/cropinfo.h"
 #include <iostream>
 #include <string>
+#include <vector>
 using namespace std;
 
-bool hasSpace(string s)
+bool hasSpace(string text)
 {
     int i = 0;
 
-    while (i < s.length())
+    while (i < text.length())
     {
-        if (s[i] == ' ' || s[i] == '\t')
+        if (text[i] == ' ' || text[i] == '\t')
             return true;
+
         i++;
     }
 
     return false;
 }
 
+bool readInteger(int &value)
+{
+    if (!(cin >> value))
+    {
+        cin.clear();
+        cin.ignore(1000, '\n');
+        cout << "Invalid input. Enter a whole number.\n";
+        return false;
+    }
+
+    cin.ignore(1000, '\n');
+    return true;
+}
+
+bool readPrice(double &price)
+{
+    if (!(cin >> price))
+    {
+        cin.clear();
+        cin.ignore(1000, '\n');
+        cout << "Invalid price.\n";
+        return false;
+    }
+
+    cin.ignore(1000, '\n');
+
+    if (price <= 0)
+    {
+        cout << "Price must be greater than zero.\n";
+        return false;
+    }
+
+    return true;
+}
+
+// FARMER MENU
 void farmerMenu(string username)
 {
     Farmer farmer(username, "", "", "");
-    int choice;
-    string id, name, location;
+    CropInfo crop;
+
+    int choice, quantity;
+    double price;
+    string id, name, location, cropName;
 
     while (true)
     {
         cout << "\n===== FARMER MENU =====\n";
         cout << "1. Add Farmer Details\n";
-        cout << "2. View Farmer Details\n";
+        cout << "2. View My Farmer Details\n";
         cout << "3. Search Farmer\n";
         cout << "4. Update Farmer Details\n";
-        cout << "5. Logout\n";
+        cout << "5. Add Crop for Sale\n";
+        cout << "6. View My Crops\n";
+        cout << "7. Update My Crop Listing\n";
+        cout << "8. Remove My Crop Listing\n";
+        cout << "9. Logout\n";
         cout << "Enter choice: ";
 
-        if (!(cin >> choice))
-        {
-            cin.clear();
-            cin.ignore(1000, '\n');
-            cout << "Invalid input.\n";
+        if (!readInteger(choice))
             continue;
-        }
-        cin.ignore(1000, '\n');
 
         if (choice == 1)
         {
             cout << "Enter farmer name (one word): ";
             getline(cin, name);
+
             cout << "Enter location (one word): ";
             getline(cin, location);
 
-            if (name == "" || location == "" ||
+            if (name.empty() || location.empty() ||
                 hasSpace(name) || hasSpace(location))
             {
-                cout << "Name and location must be non-empty single words.\n";
+                cout << "Enter valid single-word name and location.\n";
             }
             else
             {
@@ -70,7 +111,8 @@ void farmerMenu(string username)
         }
         else if (choice == 2)
         {
-            farmer.viewFarmer(username);
+            if (!farmer.viewFarmer(username))
+                cout << "Farmer details not found. Add them first.\n";
         }
         else if (choice == 3)
         {
@@ -84,15 +126,17 @@ void farmerMenu(string username)
         {
             cout << "Enter farmer ID to update: ";
             getline(cin, id);
+
             cout << "Enter new name (one word): ";
             getline(cin, name);
+
             cout << "Enter new location (one word): ";
             getline(cin, location);
 
-            if (name == "" || location == "" ||
+            if (id.empty() || name.empty() || location.empty() ||
                 hasSpace(name) || hasSpace(location))
             {
-                cout << "Name and location must be non-empty single words.\n";
+                cout << "Enter valid details.\n";
             }
             else if (farmer.updateFarmer(id, name, location))
             {
@@ -105,52 +149,121 @@ void farmerMenu(string username)
         }
         else if (choice == 5)
         {
-            cout << "Farmer logged out successfully.\n";
+            cout << "Enter crop name (one word): ";
+            getline(cin, cropName);
+
+            if (cropName.empty() || hasSpace(cropName))
+            {
+                cout << "Enter a valid single-word crop name.\n";
+                continue;
+            }
+
+            cout << "Enter quantity in kg: ";
+            if (!readInteger(quantity))
+                continue;
+
+            if (quantity <= 0)
+            {
+                cout << "Quantity must be greater than zero.\n";
+                continue;
+            }
+
+            cout << "Enter expected price per kg: ";
+            if (!readPrice(price))
+                continue;
+
+            CropInfo newCrop(username, cropName, quantity, price);
+            newCrop.addCrop();
+        }
+        else if (choice == 6)
+        {
+            crop.viewMyCrops(username);
+        }
+        else if (choice == 7)
+        {
+            cout << "Enter crop name to update: ";
+            getline(cin, cropName);
+
+            if (cropName.empty() || hasSpace(cropName))
+            {
+                cout << "Enter a valid single-word crop name.\n";
+                continue;
+            }
+
+            cout << "Enter new quantity in kg: ";
+            if (!readInteger(quantity))
+                continue;
+
+            if (quantity <= 0)
+            {
+                cout << "Quantity must be greater than zero.\n";
+                continue;
+            }
+
+            cout << "Enter new expected price per kg: ";
+            if (!readPrice(price))
+                continue;
+
+            crop.updateCrop(username, cropName, quantity, price);
+        }
+        else if (choice == 8)
+        {
+            cout << "Enter crop name to remove: ";
+            getline(cin, cropName);
+
+            if (cropName.empty() || hasSpace(cropName))
+                cout << "Enter a valid single-word crop name.\n";
+            else
+                crop.removeCrop(username, cropName);
+        }
+        else if (choice == 9)
+        {
+            cout << "Logged out successfully.\n";
             return;
         }
         else
         {
-            cout << "Invalid choice.\n";
+            cout << "Invalid choice. Select 1 to 9.\n";
         }
     }
 }
 
+// MANDI MENU
 void mandiMenu(string username)
 {
-    Mandi mandi(username, "", "", "");
+    Mandi mandi(username, "", "", "", vector<string>(), 0);
+    CropInfo crop;
+
     int choice;
-    string id, name, location;
+    string id, name, location, cropName;
 
     while (true)
     {
         cout << "\n===== MANDI MENU =====\n";
         cout << "1. Add Mandi Details\n";
-        cout << "2. View Mandi Details\n";
+        cout << "2. View My Mandi Details\n";
         cout << "3. Search Mandi\n";
         cout << "4. Update Mandi Details\n";
-        cout << "5. Logout\n";
+        cout << "5. View All Available Crops\n";
+        cout << "6. Search Crop Listings\n";
+        cout << "7. Logout\n";
         cout << "Enter choice: ";
 
-        if (!(cin >> choice))
-        {
-            cin.clear();
-            cin.ignore(1000, '\n');
-            cout << "Invalid input.\n";
+        if (!readInteger(choice))
             continue;
-        }
-        cin.ignore(1000, '\n');
 
         if (choice == 1)
         {
             cout << "Enter mandi name (one word): ";
             getline(cin, name);
+
             cout << "Enter location (one word): ";
             getline(cin, location);
 
-            if (name == "" || location == "" ||
+            if (name.empty() || location.empty() ||
                 hasSpace(name) || hasSpace(location))
             {
-                cout << "Name and location must be non-empty single words.\n";
+                cout << "Enter valid single-word name and location.\n";
             }
             else
             {
@@ -180,15 +293,17 @@ void mandiMenu(string username)
         {
             cout << "Enter mandi ID to update: ";
             getline(cin, id);
+
             cout << "Enter new name (one word): ";
             getline(cin, name);
+
             cout << "Enter new location (one word): ";
             getline(cin, location);
 
-            if (name == "" || location == "" ||
+            if (id.empty() || name.empty() || location.empty() ||
                 hasSpace(name) || hasSpace(location))
             {
-                cout << "Name and location must be non-empty single words.\n";
+                cout << "Enter valid details.\n";
             }
             else if (mandi.updateMandi(id, name, location))
             {
@@ -201,16 +316,31 @@ void mandiMenu(string username)
         }
         else if (choice == 5)
         {
-            cout << "Mandi logged out successfully.\n";
+            crop.viewAllCrops();
+        }
+        else if (choice == 6)
+        {
+            cout << "Enter crop name to search: ";
+            getline(cin, cropName);
+
+            if (cropName.empty() || hasSpace(cropName))
+                cout << "Enter a valid single-word crop name.\n";
+            else
+                crop.searchCrop(cropName);
+        }
+        else if (choice == 7)
+        {
+            cout << "Logged out successfully.\n";
             return;
         }
         else
         {
-            cout << "Invalid choice.\n";
+            cout << "Invalid choice. Select 1 to 7.\n";
         }
     }
 }
 
+// MAIN FUNCTION
 int main()
 {
     UserAuthentication auth;
@@ -223,51 +353,41 @@ int main()
 
     while (true)
     {
-        cout << "\n===== WELCOME TO AGRICONNECT =====\n";
+        cout << "\n===== AGRICONNECT =====\n";
         cout << "1. Farmer Login\n";
         cout << "2. Farmer Registration\n";
         cout << "3. Mandi Login\n";
         cout << "4. Mandi Registration\n";
         cout << "5. Exit\n";
-        cout << "Enter your choice: ";
+        cout << "Enter choice: ";
 
-        if (!(cin >> choice))
-        {
-            cin.clear();
-            cin.ignore(1000, '\n');
-            cout << "Please enter a valid number.\n";
+        if (!readInteger(choice))
             continue;
-        }
-        cin.ignore(1000, '\n');
 
         if (choice == 1 || choice == 3)
         {
             cout << "Enter username: ";
             getline(cin, username);
+
             cout << "Enter password: ";
             getline(cin, password);
 
-            if (username == "" || password == "")
+            if (username.empty() || password.empty() ||
+                hasSpace(username) || hasSpace(password))
             {
-                cout << "Username and password cannot be empty.\n";
-                continue;
-            }
-
-            if (hasSpace(username) || hasSpace(password))
-            {
-                cout << "Username and password cannot contain spaces.\n";
+                cout << "Enter a valid username and password without spaces.\n";
                 continue;
             }
 
             if (choice == 1 && !auth.farmerUsernameExists(username))
             {
-                cout << "Farmer username not found. Please register first.\n";
+                cout << "Farmer username not found. Register first.\n";
                 continue;
             }
 
             if (choice == 3 && !auth.mandiUsernameExists(username))
             {
-                cout << "Mandi username not found. Please register first.\n";
+                cout << "Mandi username not found. Register first.\n";
                 continue;
             }
 
@@ -288,20 +408,14 @@ int main()
 
                 if (attempts > 0)
                 {
-                    cout << "Incorrect password. " << attempts
-                         << " attempt(s) left.\n";
+                    cout << "Incorrect password. Attempts left: "
+                         << attempts << "\n";
                     cout << "Enter password again: ";
                     getline(cin, password);
-
-                    if (password == "" || hasSpace(password))
-                    {
-                        cout << "Invalid password format.\n";
-                        break;
-                    }
                 }
                 else
                 {
-                    cout << "Too many incorrect attempts. Try again later.\n";
+                    cout << "Too many incorrect attempts.\n";
                 }
             }
 
@@ -309,36 +423,36 @@ int main()
             {
                 if (choice == 1)
                 {
-                    cout << "Farmer login successful!\n";
+                    cout << "Farmer login successful.\n";
                     farmerMenu(username);
                 }
                 else
                 {
-                    cout << "Mandi login successful!\n";
+                    cout << "Mandi login successful.\n";
                     mandiMenu(username);
                 }
             }
         }
         else if (choice == 2 || choice == 4)
         {
-            cout << "Choose a username: ";
+            cout << "Choose username: ";
             getline(cin, username);
-            cout << "Choose a password: ";
+
+            cout << "Choose password: ";
             getline(cin, password);
 
-            if (username == "" || password == "")
+            if (username.empty() || password.empty() ||
+                hasSpace(username) || hasSpace(password))
             {
-                cout << "Username and password cannot be empty.\n";
+                cout << "Username and password must be non-empty and contain no spaces.\n";
+                continue;
             }
-            else if (hasSpace(username) || hasSpace(password))
-            {
-                cout << "Username and password cannot contain spaces.\n";
-            }
-            else if (choice == 2)
+
+            if (choice == 2)
             {
                 if (auth.registerFarmer(username, password))
                 {
-                    cout << "Farmer registration successful!\n";
+                    cout << "Farmer registration successful.\n";
                     farmerMenu(username);
                 }
                 else
@@ -350,7 +464,7 @@ int main()
             {
                 if (auth.registerMandi(username, password))
                 {
-                    cout << "Mandi registration successful!\n";
+                    cout << "Mandi registration successful.\n";
                     mandiMenu(username);
                 }
                 else
@@ -372,3 +486,4 @@ int main()
 
     return 0;
 }
+

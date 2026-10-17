@@ -21,6 +21,10 @@ public:
 
     string getFarmerName();
     string getLocation();
-};
 
+    bool addFarmer();
+    bool viewFarmer(string id);
+    bool updateFarmer(string id, string name, string loc);
+    bool searchFarmer(string id);
+};
 #endif

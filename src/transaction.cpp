@@ -65,6 +65,14 @@ int Transaction::getTransactionId(){
     return this->transactionId;
 }
 
+string Transaction::getFarmerName(){
+    return this->farmerName;
+}
+
+string Transaction::getBuyerName(){
+    return this->buyerName;
+}
+
 string Transaction::getStatus(){
     return this->status;
 }

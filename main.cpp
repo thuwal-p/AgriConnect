@@ -60,7 +60,7 @@ void farmerMenu(string username)
 
     int choice, quantity;
     double price;
-    string id, name, location, cropName;
+    string name, location, cropName;
 
     while (true)
     {
@@ -95,9 +95,7 @@ void farmerMenu(string username)
                 farmer.setFarmerName(name);
                 farmer.setLocation(location);
 
-                if (farmer.addFarmer())
-                    cout << "Farmer details added successfully.\n";
-                else
+                if (!farmer.addFarmer())
                     cout << "Could not add details. They may already exist.\n";
             }
         }
@@ -108,16 +106,13 @@ void farmerMenu(string username)
         }
         else if (choice == 3)
         {
-            cout << "Enter farmer ID to update: ";
-            cin >> id;
-
             cout << "Enter new name (one word): ";
             cin >> name;
 
             cout << "Enter new location (one word): ";
             cin >> location;
 
-            if (farmer.updateFarmer(id, name, location))
+            if (farmer.updateFarmer(username, name, location))
                 cout << "Farmer details updated successfully.\n";
             else
                 cout << "Farmer not found or update failed.\n";
@@ -207,7 +202,7 @@ void mandiMenu(string username)
                 vector<double>(), 0);
 
     int choice;
-    string id, name, location;
+    string name, location;
 
     while (true)
     {
@@ -223,11 +218,8 @@ void mandiMenu(string username)
 
         if (choice == 1)
         {
-            // addMandi() handles all mandi inputs internally.
-            if (mandi.addMandi())
-                cout << "Mandi details added successfully.\n";
-            else
-                cout << "Could not add details. They may already exist.\n";
+            // addMandi() prints its own result message.
+            mandi.addMandi();
         }
         else if (choice == 2)
         {
@@ -236,16 +228,13 @@ void mandiMenu(string username)
         }
         else if (choice == 3)
         {
-            cout << "Enter mandi username to update: ";
-            cin >> id;
-
             cout << "Enter new name (one word): ";
             cin >> name;
 
             cout << "Enter new location (one word): ";
             cin >> location;
 
-            if (mandi.updateMandi(id, name, location))
+            if (mandi.updateMandi(username, name, location))
                 cout << "Mandi details updated successfully.\n";
             else
                 cout << "Mandi not found or update failed.\n";

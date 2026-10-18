@@ -3,7 +3,6 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
-#include <limits>
 
 using namespace std;
 
@@ -11,9 +10,9 @@ Mandi::Mandi()
 {
     mandiName = "";
     location = "";
+    capacity = 0;
     crops.clear();
     buyingPrices.clear();
-    capacity = 0;
 }
 
 Mandi::Mandi(string u, string p, string name, string loc,
@@ -80,21 +79,29 @@ int Mandi::getCapacity()
 bool Mandi::addMandi()
 {
     string id = getUsername();
-    string u, name, loc, cropData;
-    int cap;
-    int numberOfCrops;
+    string line;
 
-    if (id == "")
+    if (id.empty())
     {
         cout << "Invalid mandi username!" << endl;
         return false;
     }
 
-    // Check if mandi details already exist
+    // Check whether details already exist.
     ifstream check("mandi_details.txt");
 
-    while (check >> u >> name >> loc >> cap >> cropData)
+    while (getline(check, line))
     {
+        istringstream row(line);
+
+        string u, name, loc, cropData;
+        int cap;
+
+        if (!(row >> u >> name >> loc >> cap >> cropData))
+        {
+            continue;
+        }
+
         if (u == id)
         {
             check.close();
@@ -105,7 +112,9 @@ bool Mandi::addMandi()
 
     check.close();
 
-    cout << "\nEnter Mandi Name: ";
+    int numberOfCrops;
+
+    cout << "Enter Mandi Name: ";
     cin >> mandiName;
 
     cout << "Enter Location: ";
@@ -113,31 +122,17 @@ bool Mandi::addMandi()
 
     cout << "Enter Mandi Capacity: ";
 
-    if (!(cin >> capacity))
+    if (!(cin >> capacity) || capacity <= 0)
     {
         cout << "Invalid capacity!" << endl;
-        cin.clear();
         return false;
     }
 
-    if (capacity <= 0)
-    {
-        cout << "Capacity must be greater than zero!" << endl;
-        return false;
-    }
+    cout << "How many crops do you buy? ";
 
-    cout << "How many crops do you want to buy? ";
-
-    if (!(cin >> numberOfCrops))
+    if (!(cin >> numberOfCrops) || numberOfCrops <= 0)
     {
         cout << "Invalid number of crops!" << endl;
-        cin.clear();
-        return false;
-    }
-
-    if (numberOfCrops <= 0)
-    {
-        cout << "Number of crops must be greater than zero!" << endl;
         return false;
     }
 
@@ -149,22 +144,14 @@ bool Mandi::addMandi()
         string crop;
         double price;
 
-        cout << "\nEnter crop " << i + 1 << " name: ";
+        cout << "Enter crop name: ";
         cin >> crop;
 
-        cout << "Enter buying price per kg for "
-             << crop << ": Rs. ";
+        cout << "Enter buying price per kg: ";
 
-        if (!(cin >> price))
+        if (!(cin >> price) || price <= 0)
         {
-            cout << "Invalid buying price!" << endl;
-            cin.clear();
-            return false;
-        }
-
-        if (price <= 0)
-        {
-            cout << "Price must be greater than zero!" << endl;
+            cout << "Invalid price!" << endl;
             return false;
         }
 
@@ -198,8 +185,7 @@ bool Mandi::addMandi()
     file << "\n";
     file.close();
 
-    cout << "\nMandi details added successfully!" << endl;
-
+    cout << "Mandi details added successfully!" << endl;
     return true;
 }
 
@@ -207,20 +193,31 @@ bool Mandi::viewMandi(string id)
 {
     ifstream file("mandi_details.txt");
 
-    string u, name, loc, cropData;
-    int cap;
-
     if (!file)
     {
+        cout << "Unable to open mandi details file!" << endl;
         return false;
     }
 
-    while (file >> u >> name >> loc >> cap >> cropData)
+    string line;
+
+    while (getline(file, line))
     {
+        istringstream row(line);
+
+        string u, name, loc, cropData;
+        int cap;
+
+        if (!(row >> u >> name >> loc >> cap >> cropData))
+        {
+            continue;
+        }
+
         if (u == id)
         {
-            cout << "\nMandi Username: " << u << endl;
-            cout << "Name: " << name << endl;
+            cout << "\n===== MY MANDI DETAILS =====" << endl;
+            cout << "Username: " << u << endl;
+            cout << "Mandi Name: " << name << endl;
             cout << "Location: " << loc << endl;
             cout << "Capacity: " << cap << endl;
             cout << "Crop Buying Prices:" << endl;
@@ -256,22 +253,36 @@ bool Mandi::updateMandi(string id, string name, string loc)
 
     if (!file)
     {
+        cout << "Unable to open mandi details file!" << endl;
         return false;
     }
 
-    string ids[100], names[100], locations[100], cropData[100];
+    string ids[100];
+    string names[100];
+    string locations[100];
+    string cropData[100];
     int capacities[100];
 
-    string u, oldName, oldLoc, data;
-    int cap;
+    string line;
     int count = 0;
     bool found = false;
 
-    while (file >> u >> oldName >> oldLoc >> cap >> data)
+    while (getline(file, line))
     {
+        istringstream row(line);
+
+        string u, oldName, oldLoc, data;
+        int cap;
+
+        if (!(row >> u >> oldName >> oldLoc >> cap >> data))
+        {
+            continue;
+        }
+
         if (count >= 100)
         {
             file.close();
+            cout << "Too many mandi records!" << endl;
             return false;
         }
 
@@ -302,6 +313,7 @@ bool Mandi::updateMandi(string id, string name, string loc)
 
     if (!output)
     {
+        cout << "Unable to update mandi details file!" << endl;
         return false;
     }
 
@@ -317,6 +329,6 @@ bool Mandi::updateMandi(string id, string name, string loc)
     output.close();
 
     cout << "Mandi details updated successfully!" << endl;
-
     return true;
 }
+

@@ -1,4 +1,3 @@
-
 #include "include/user.h"
 #include "include/farmer.h"
 #include "include/mandi.h"
@@ -73,13 +72,12 @@ void farmerMenu(string username)
         cout << "\n===== FARMER MENU =====\n";
         cout << "1. Add Farmer Details\n";
         cout << "2. View My Farmer Details\n";
-        cout << "3. Search Farmer\n";
-        cout << "4. Update Farmer Details\n";
-        cout << "5. Add Crop for Sale\n";
-        cout << "6. View My Crops\n";
-        cout << "7. Update My Crop Listing\n";
-        cout << "8. Remove My Crop Listing\n";
-        cout << "9. Logout\n";
+        cout << "3. Update Farmer Details\n";
+        cout << "4. Add Crop for Sale\n";
+        cout << "5. View My Crops\n";
+        cout << "6. Update My Crop Listing\n";
+        cout << "7. Remove My Crop Listing\n";
+        cout << "8. Logout\n";
         cout << "Enter choice: ";
 
         if (!readInteger(choice))
@@ -116,14 +114,6 @@ void farmerMenu(string username)
         }
         else if (choice == 3)
         {
-            cout << "Enter farmer ID to search: ";
-            getline(cin, id);
-
-            if (!farmer.searchFarmer(id))
-                cout << "Farmer not found.\n";
-        }
-        else if (choice == 4)
-        {
             cout << "Enter farmer ID to update: ";
             getline(cin, id);
 
@@ -147,7 +137,7 @@ void farmerMenu(string username)
                 cout << "Farmer not found or update failed.\n";
             }
         }
-        else if (choice == 5)
+        else if (choice == 4)
         {
             cout << "Enter crop name (one word): ";
             getline(cin, cropName);
@@ -175,11 +165,11 @@ void farmerMenu(string username)
             CropInfo newCrop(username, cropName, quantity, price);
             newCrop.addCrop();
         }
-        else if (choice == 6)
+        else if (choice == 5)
         {
             crop.viewMyCrops(username);
         }
-        else if (choice == 7)
+        else if (choice == 6)
         {
             cout << "Enter crop name to update: ";
             getline(cin, cropName);
@@ -206,7 +196,7 @@ void farmerMenu(string username)
 
             crop.updateCrop(username, cropName, quantity, price);
         }
-        else if (choice == 8)
+        else if (choice == 7)
         {
             cout << "Enter crop name to remove: ";
             getline(cin, cropName);
@@ -216,14 +206,14 @@ void farmerMenu(string username)
             else
                 crop.removeCrop(username, cropName);
         }
-        else if (choice == 9)
+        else if (choice == 8)
         {
             cout << "Logged out successfully.\n";
             return;
         }
         else
         {
-            cout << "Invalid choice. Select 1 to 9.\n";
+            cout << "Invalid choice. Select 1 to 8.\n";
         }
     }
 }
@@ -233,8 +223,6 @@ void mandiMenu(string username)
 {
     Mandi mandi(username, "", "", "", vector<string>(),
                 vector<double>(), 0);
-
-    CropInfo crop;
 
     int choice;
     string id, name, location;

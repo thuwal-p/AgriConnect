@@ -19,6 +19,7 @@ private:
 
 public:
     Mandi();
+
     Mandi(string u, string p, string name, string loc,
           vector<string> crops, vector<double> prices, int capacity);
 
@@ -40,3 +41,4 @@ public:
 };
 
 #endif
+

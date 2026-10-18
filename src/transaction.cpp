@@ -73,6 +73,18 @@ string Transaction::getBuyerName(){
     return this->buyerName;
 }
 
+string Transaction::getCropName(){
+    return this->cropName;
+}
+
+float Transaction::getQuantity(){
+    return this->quantity;
+}
+
+float Transaction::getPrice(){
+    return this->price;
+}
+
 string Transaction::getStatus(){
     return this->status;
 }

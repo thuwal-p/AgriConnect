@@ -1,3 +1,5 @@
+
+
 #ifndef CROPINFO_H
 #define CROPINFO_H
 
@@ -27,8 +29,6 @@ public:
 
     bool addCrop();
     void viewMyCrops(string id);
-    void viewAllCrops();
-    bool searchCrop(string target);
     bool updateCrop(string id, string target, int qty, double price);
     bool removeCrop(string id, string target);
 };

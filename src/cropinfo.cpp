@@ -103,18 +103,6 @@ bool CropInfo::addCrop()
 
         checkFile.close();
     }
-    else
-    {
-        // Check whether the file exists but cannot be read.
-        ifstream testFile("crops.txt");
-
-        if (testFile.fail())
-        {
-            // A missing file is acceptable for the first listing.
-            // The append operation below will attempt to create it.
-            testFile.close();
-        }
-    }
 
     ofstream file("crops.txt", ios::app);
 
@@ -177,111 +165,12 @@ void CropInfo::viewMyCrops(string id)
     }
 
     if (!file.eof())
-    {
         cout << "Error: Invalid data found in crops.txt.\n";
-    }
 
     file.close();
 
     if (!found)
-    {
         cout << "You have not listed any crops yet.\n";
-    }
-}
-
-// VIEW ALL CROPS FOR MANDI
-void CropInfo::viewAllCrops()
-{
-    ifstream file("crops.txt");
-
-    if (!file.is_open())
-    {
-        cout << "No crop listings found yet.\n";
-        return;
-    }
-
-    string farmer, crop;
-    int qty;
-    double price;
-    bool found = false;
-
-    cout << "\n===== AVAILABLE CROPS =====\n";
-
-    while (file >> farmer >> crop >> qty >> price)
-    {
-        cout << "\nFarmer ID: " << farmer << endl;
-        cout << "Crop: " << crop << endl;
-        cout << "Quantity: " << qty << " kg\n";
-        cout << "Expected price: Rs. " << price
-             << " per kg\n";
-        cout << "----------------------\n";
-        found = true;
-    }
-
-    if (!file.eof())
-    {
-        cout << "Error: Invalid data found in crops.txt.\n";
-    }
-
-    file.close();
-
-    if (!found)
-    {
-        cout << "No crops are available for sale.\n";
-    }
-}
-
-// SEARCH CROP
-bool CropInfo::searchCrop(string target)
-{
-    if (target.empty())
-    {
-        cout << "Error: Search name cannot be empty.\n";
-        return false;
-    }
-
-    ifstream file("crops.txt");
-
-    if (!file.is_open())
-    {
-        cout << "No crop listings found yet.\n";
-        return false;
-    }
-
-    string farmer, crop;
-    int qty;
-    double price;
-    bool found = false;
-
-    while (file >> farmer >> crop >> qty >> price)
-    {
-        if (crop == target)
-        {
-            cout << "\nFarmer ID: " << farmer << endl;
-            cout << "Crop: " << crop << endl;
-            cout << "Quantity: " << qty << " kg\n";
-            cout << "Expected price: Rs. " << price
-                 << " per kg\n";
-            cout << "----------------------\n";
-            found = true;
-        }
-    }
-
-    if (!file.eof())
-    {
-        cout << "Error: Invalid data found in crops.txt.\n";
-        file.close();
-        return false;
-    }
-
-    file.close();
-
-    if (!found)
-    {
-        cout << "No matching crop found.\n";
-    }
-
-    return found;
 }
 
 // UPDATE CROP
@@ -308,7 +197,7 @@ bool CropInfo::updateCrop(string id, string target,
         return false;
     }
 
-    string ids[500], crops[500], farmer, crop;
+    string ids[500], cropNames[500], farmer, crop;
     int quantities[500], oldQty;
     double prices[500], oldPrice;
     int count = 0;
@@ -324,7 +213,7 @@ bool CropInfo::updateCrop(string id, string target,
         }
 
         ids[count] = farmer;
-        crops[count] = crop;
+        cropNames[count] = crop;
         quantities[count] = oldQty;
         prices[count] = oldPrice;
 
@@ -365,7 +254,7 @@ bool CropInfo::updateCrop(string id, string target,
 
     while (i < count)
     {
-        output << ids[i] << " " << crops[i] << " "
+        output << ids[i] << " " << cropNames[i] << " "
                << quantities[i] << " " << prices[i] << "\n";
 
         if (!output)
@@ -401,7 +290,7 @@ bool CropInfo::removeCrop(string id, string target)
         return false;
     }
 
-    string ids[500], crops[500], farmer, crop;
+    string ids[500], cropNames[500], farmer, crop;
     int quantities[500], qty;
     double prices[500], price;
     int count = 0;
@@ -423,7 +312,7 @@ bool CropInfo::removeCrop(string id, string target)
         }
 
         ids[count] = farmer;
-        crops[count] = crop;
+        cropNames[count] = crop;
         quantities[count] = qty;
         prices[count] = price;
         count++;
@@ -456,7 +345,7 @@ bool CropInfo::removeCrop(string id, string target)
 
     while (i < count)
     {
-        output << ids[i] << " " << crops[i] << " "
+        output << ids[i] << " " << cropNames[i] << " "
                << quantities[i] << " " << prices[i] << "\n";
 
         if (!output)
@@ -474,3 +363,4 @@ bool CropInfo::removeCrop(string id, string target)
     cout << "Crop removed successfully.\n";
     return true;
 }
+

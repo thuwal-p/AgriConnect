@@ -1,3 +1,4 @@
+
 #ifndef FARMER_H
 #define FARMER_H
 
@@ -25,6 +26,6 @@ public:
     bool addFarmer();
     bool viewFarmer(string id);
     bool updateFarmer(string id, string name, string loc);
-    bool searchFarmer(string id);
 };
+
 #endif

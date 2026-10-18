@@ -2,6 +2,7 @@
 #include "../include/farmer.h"
 #include <iostream>
 #include <fstream>
+
 using namespace std;
 
 Farmer::Farmer()
@@ -94,11 +95,6 @@ bool Farmer::viewFarmer(string id)
     return false;
 }
 
-bool Farmer::searchFarmer(string id)
-{
-    return viewFarmer(id);
-}
-
 bool Farmer::updateFarmer(string id, string name, string loc)
 {
     ifstream file("farmer_details.txt");
@@ -152,6 +148,6 @@ bool Farmer::updateFarmer(string id, string name, string loc)
     }
 
     output.close();
-
     return true;
 }
+

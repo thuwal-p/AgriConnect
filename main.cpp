@@ -35,23 +35,6 @@ bool readInteger(int &value)
     return true;
 }
 
-bool readPrice(double &price)
-{
-    if (!(cin >> price))
-    {
-        cout << "Invalid price. Please restart and enter a number.\n";
-        return false;
-    }
-
-    if (price <= 0)
-    {
-        cout << "Price must be greater than zero.\n";
-        return false;
-    }
-
-    return true;
-}
-
 // FARMER MENU
 void farmerMenu(string username)
 {
@@ -59,7 +42,6 @@ void farmerMenu(string username)
     CropInfo crop;
 
     int choice, quantity;
-    double price;
     string name, location, cropName;
 
     while (true)
@@ -123,6 +105,7 @@ void farmerMenu(string username)
             cin >> cropName;
 
             cout << "Enter quantity in kg: ";
+
             if (!readInteger(quantity))
                 return;
 
@@ -132,17 +115,7 @@ void farmerMenu(string username)
                 continue;
             }
 
-            cout << "Enter expected price per kg: ";
-
-            if (!readPrice(price))
-            {
-                if (!cin)
-                    return;
-
-                continue;
-            }
-
-            CropInfo newCrop(username, cropName, quantity, price);
+            CropInfo newCrop(username, cropName, quantity);
             newCrop.addCrop();
         }
         else if (choice == 5)
@@ -155,6 +128,7 @@ void farmerMenu(string username)
             cin >> cropName;
 
             cout << "Enter new quantity in kg: ";
+
             if (!readInteger(quantity))
                 return;
 
@@ -164,17 +138,7 @@ void farmerMenu(string username)
                 continue;
             }
 
-            cout << "Enter new expected price per kg: ";
-
-            if (!readPrice(price))
-            {
-                if (!cin)
-                    return;
-
-                continue;
-            }
-
-            crop.updateCrop(username, cropName, quantity, price);
+            crop.updateCrop(username, cropName, quantity);
         }
         else if (choice == 7)
         {
@@ -202,7 +166,6 @@ void mandiMenu(string username)
                 vector<double>(), 0);
 
     int choice;
-    string name, location;
 
     while (true)
     {
@@ -218,7 +181,6 @@ void mandiMenu(string username)
 
         if (choice == 1)
         {
-            // addMandi() prints its own result message.
             mandi.addMandi();
         }
         else if (choice == 2)
@@ -228,16 +190,7 @@ void mandiMenu(string username)
         }
         else if (choice == 3)
         {
-            cout << "Enter new name (one word): ";
-            cin >> name;
-
-            cout << "Enter new location (one word): ";
-            cin >> location;
-
-            if (mandi.updateMandi(username, name, location))
-                cout << "Mandi details updated successfully.\n";
-            else
-                cout << "Mandi not found or update failed.\n";
+            mandi.updateMandi(username);
         }
         else if (choice == 4)
         {
@@ -383,3 +336,4 @@ int main()
 
     return 0;
 }
+

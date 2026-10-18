@@ -9,15 +9,13 @@ CropInfo::CropInfo()
     farmerID = "";
     cropName = "";
     quantity = 0;
-    expectedPrice = 0;
 }
 
-CropInfo::CropInfo(string id, string crop, int qty, double price)
+CropInfo::CropInfo(string id, string crop, int qty)
 {
     farmerID = id;
     cropName = crop;
     quantity = qty;
-    expectedPrice = price;
 }
 
 void CropInfo::setCropName(string crop)
@@ -28,11 +26,6 @@ void CropInfo::setCropName(string crop)
 void CropInfo::setQuantity(int qty)
 {
     quantity = qty;
-}
-
-void CropInfo::setExpectedPrice(double price)
-{
-    expectedPrice = price;
 }
 
 string CropInfo::getFarmerID()
@@ -50,11 +43,6 @@ int CropInfo::getQuantity()
     return quantity;
 }
 
-double CropInfo::getExpectedPrice()
-{
-    return expectedPrice;
-}
-
 // ADD CROP
 bool CropInfo::addCrop()
 {
@@ -64,9 +52,9 @@ bool CropInfo::addCrop()
         return false;
     }
 
-    if (quantity <= 0 || expectedPrice <= 0)
+    if (quantity <= 0)
     {
-        cout << "Error: Quantity and price must be greater than zero.\n";
+        cout << "Error: Quantity must be greater than zero.\n";
         return false;
     }
 
@@ -77,32 +65,19 @@ bool CropInfo::addCrop()
     }
 
     ifstream checkFile("crops.txt");
+    string farmer, crop;
+    int qty;
 
-    if (checkFile.is_open())
+    while (checkFile >> farmer >> crop >> qty)
     {
-        string farmer, crop;
-        int qty;
-        double price;
-
-        while (checkFile >> farmer >> crop >> qty >> price)
-        {
-            if (farmer == farmerID && crop == cropName)
-            {
-                checkFile.close();
-                cout << "Error: You have already listed this crop.\n";
-                return false;
-            }
-        }
-
-        if (!checkFile.eof())
+        if (farmer == farmerID && crop == cropName)
         {
             checkFile.close();
-            cout << "Error: Crop file contains invalid data.\n";
+            cout << "Error: You have already listed this crop.\n";
             return false;
         }
-
-        checkFile.close();
     }
+    checkFile.close();
 
     ofstream file("crops.txt", ios::app);
 
@@ -113,14 +88,7 @@ bool CropInfo::addCrop()
     }
 
     file << farmerID << " " << cropName << " "
-         << quantity << " " << expectedPrice << "\n";
-
-    if (!file)
-    {
-        cout << "Error: Could not save the crop listing.\n";
-        file.close();
-        return false;
-    }
+         << quantity << "\n";
 
     file.close();
 
@@ -131,12 +99,6 @@ bool CropInfo::addCrop()
 // VIEW FARMER'S CROPS
 void CropInfo::viewMyCrops(string id)
 {
-    if (id.empty())
-    {
-        cout << "Error: Farmer ID cannot be empty.\n";
-        return;
-    }
-
     ifstream file("crops.txt");
 
     if (!file.is_open())
@@ -147,25 +109,19 @@ void CropInfo::viewMyCrops(string id)
 
     string farmer, crop;
     int qty;
-    double price;
     bool found = false;
 
-    while (file >> farmer >> crop >> qty >> price)
+    while (file >> farmer >> crop >> qty)
     {
         if (farmer == id)
         {
             cout << "\nFarmer ID: " << farmer << endl;
             cout << "Crop: " << crop << endl;
             cout << "Quantity: " << qty << " kg\n";
-            cout << "Expected price: Rs. " << price
-                 << " per kg\n";
             cout << "----------------------\n";
             found = true;
         }
     }
-
-    if (!file.eof())
-        cout << "Error: Invalid data found in crops.txt.\n";
 
     file.close();
 
@@ -174,18 +130,11 @@ void CropInfo::viewMyCrops(string id)
 }
 
 // UPDATE CROP
-bool CropInfo::updateCrop(string id, string target,
-                          int qty, double price)
+bool CropInfo::updateCrop(string id, string target, int qty)
 {
-    if (id.empty() || target.empty())
+    if (id.empty() || target.empty() || qty <= 0)
     {
-        cout << "Error: Farmer ID and crop name cannot be empty.\n";
-        return false;
-    }
-
-    if (qty <= 0 || price <= 0)
-    {
-        cout << "Error: Quantity and price must be positive.\n";
+        cout << "Error: Enter a valid crop name and quantity.\n";
         return false;
     }
 
@@ -199,11 +148,10 @@ bool CropInfo::updateCrop(string id, string target,
 
     string ids[500], cropNames[500], farmer, crop;
     int quantities[500], oldQty;
-    double prices[500], oldPrice;
     int count = 0;
     bool found = false;
 
-    while (file >> farmer >> crop >> oldQty >> oldPrice)
+    while (file >> farmer >> crop >> oldQty)
     {
         if (count >= 500)
         {
@@ -215,23 +163,14 @@ bool CropInfo::updateCrop(string id, string target,
         ids[count] = farmer;
         cropNames[count] = crop;
         quantities[count] = oldQty;
-        prices[count] = oldPrice;
 
         if (farmer == id && crop == target && !found)
         {
             quantities[count] = qty;
-            prices[count] = price;
             found = true;
         }
 
         count++;
-    }
-
-    if (!file.eof())
-    {
-        file.close();
-        cout << "Error: Invalid data in crops.txt. Nothing updated.\n";
-        return false;
     }
 
     file.close();
@@ -245,25 +184,13 @@ bool CropInfo::updateCrop(string id, string target,
     ofstream output("crops.txt");
 
     if (!output.is_open())
-    {
-        cout << "Error: Unable to save updated records.\n";
         return false;
-    }
 
     int i = 0;
-
     while (i < count)
     {
         output << ids[i] << " " << cropNames[i] << " "
-               << quantities[i] << " " << prices[i] << "\n";
-
-        if (!output)
-        {
-            output.close();
-            cout << "Error: Failed while writing crop records.\n";
-            return false;
-        }
-
+               << quantities[i] << "\n";
         i++;
     }
 
@@ -276,27 +203,20 @@ bool CropInfo::updateCrop(string id, string target,
 // REMOVE CROP
 bool CropInfo::removeCrop(string id, string target)
 {
-    if (id.empty() || target.empty())
-    {
-        cout << "Error: Farmer ID and crop name cannot be empty.\n";
-        return false;
-    }
-
     ifstream file("crops.txt");
 
     if (!file.is_open())
     {
-        cout << "Error: No crop file exists to update.\n";
+        cout << "Error: No crop file exists.\n";
         return false;
     }
 
     string ids[500], cropNames[500], farmer, crop;
     int quantities[500], qty;
-    double prices[500], price;
     int count = 0;
     bool removed = false;
 
-    while (file >> farmer >> crop >> qty >> price)
+    while (file >> farmer >> crop >> qty)
     {
         if (farmer == id && crop == target && !removed)
         {
@@ -307,22 +227,13 @@ bool CropInfo::removeCrop(string id, string target)
         if (count >= 500)
         {
             file.close();
-            cout << "Error: Crop record limit exceeded.\n";
             return false;
         }
 
         ids[count] = farmer;
         cropNames[count] = crop;
         quantities[count] = qty;
-        prices[count] = price;
         count++;
-    }
-
-    if (!file.eof())
-    {
-        file.close();
-        cout << "Error: Invalid data in crops.txt. Nothing removed.\n";
-        return false;
     }
 
     file.close();
@@ -336,25 +247,13 @@ bool CropInfo::removeCrop(string id, string target)
     ofstream output("crops.txt");
 
     if (!output.is_open())
-    {
-        cout << "Error: Unable to save crop records.\n";
         return false;
-    }
 
     int i = 0;
-
     while (i < count)
     {
         output << ids[i] << " " << cropNames[i] << " "
-               << quantities[i] << " " << prices[i] << "\n";
-
-        if (!output)
-        {
-            output.close();
-            cout << "Error: Failed while writing crop records.\n";
-            return false;
-        }
-
+               << quantities[i] << "\n";
         i++;
     }
 

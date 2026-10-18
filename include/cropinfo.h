@@ -1,5 +1,4 @@
 
-
 #ifndef CROPINFO_H
 #define CROPINFO_H
 
@@ -12,25 +11,23 @@ private:
     string farmerID;
     string cropName;
     int quantity;
-    double expectedPrice;
 
 public:
     CropInfo();
-    CropInfo(string id, string crop, int qty, double price);
+    CropInfo(string id, string crop, int qty);
 
     void setCropName(string crop);
     void setQuantity(int qty);
-    void setExpectedPrice(double price);
 
     string getFarmerID();
     string getCropName();
     int getQuantity();
-    double getExpectedPrice();
 
     bool addCrop();
     void viewMyCrops(string id);
-    bool updateCrop(string id, string target, int qty, double price);
+    bool updateCrop(string id, string target, int qty);
     bool removeCrop(string id, string target);
 };
 
 #endif
+

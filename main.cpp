@@ -231,22 +231,21 @@ void farmerMenu(string username)
 // MANDI MENU
 void mandiMenu(string username)
 {
-    Mandi mandi(username, "", "", "", vector<string>(), 0);
+    Mandi mandi(username, "", "", "", vector<string>(),
+                vector<double>(), 0);
+
     CropInfo crop;
 
     int choice;
-    string id, name, location, cropName;
+    string id, name, location;
 
     while (true)
     {
         cout << "\n===== MANDI MENU =====\n";
         cout << "1. Add Mandi Details\n";
         cout << "2. View My Mandi Details\n";
-        cout << "3. Search Mandi\n";
-        cout << "4. Update Mandi Details\n";
-        cout << "5. View All Available Crops\n";
-        cout << "6. Search Crop Listings\n";
-        cout << "7. Logout\n";
+        cout << "3. Update Mandi Details\n";
+        cout << "4. Logout\n";
         cout << "Enter choice: ";
 
         if (!readInteger(choice))
@@ -254,6 +253,12 @@ void mandiMenu(string username)
 
         if (choice == 1)
         {
+            int capacity, cropCount;
+            vector<string> crops;
+            vector<double> buyingPrices;
+            string cropName;
+            double buyingPrice;
+
             cout << "Enter mandi name (one word): ";
             getline(cin, name);
 
@@ -264,17 +269,60 @@ void mandiMenu(string username)
                 hasSpace(name) || hasSpace(location))
             {
                 cout << "Enter valid single-word name and location.\n";
+                continue;
             }
-            else
-            {
-                mandi.setMandiName(name);
-                mandi.setLocation(location);
 
-                if (mandi.addMandi())
-                    cout << "Mandi details added successfully.\n";
-                else
-                    cout << "Could not add details. They may already exist.\n";
+            cout << "Enter storage capacity: ";
+            if (!readInteger(capacity) || capacity <= 0)
+            {
+                cout << "Capacity must be a positive whole number.\n";
+                continue;
             }
+
+            cout << "Enter number of crops the mandi buys: ";
+            if (!readInteger(cropCount) || cropCount <= 0)
+            {
+                cout << "Enter a positive number of crops.\n";
+                continue;
+            }
+
+            bool valid = true;
+            int i = 0;
+
+            while (i < cropCount)
+            {
+                cout << "Enter crop name (one word): ";
+                getline(cin, cropName);
+
+                if (cropName.empty() || hasSpace(cropName))
+                {
+                    cout << "Enter a valid single-word crop name.\n";
+                    valid = false;
+                    break;
+                }
+
+                cout << "Enter buying price per kg: ";
+                if (!readPrice(buyingPrice))
+                {
+                    valid = false;
+                    break;
+                }
+
+                crops.push_back(cropName);
+                buyingPrices.push_back(buyingPrice);
+                i++;
+            }
+
+            if (!valid)
+                continue;
+
+            Mandi newMandi(username, "", name, location,
+                           crops, buyingPrices, capacity);
+
+            if (newMandi.addMandi())
+                cout << "Mandi details and crop buying prices added successfully.\n";
+            else
+                cout << "Could not add details. They may already exist.\n";
         }
         else if (choice == 2)
         {
@@ -282,14 +330,6 @@ void mandiMenu(string username)
                 cout << "Mandi details not found. Add them first.\n";
         }
         else if (choice == 3)
-        {
-            cout << "Enter mandi ID to search: ";
-            getline(cin, id);
-
-            if (!mandi.searchMandi(id))
-                cout << "Mandi not found.\n";
-        }
-        else if (choice == 4)
         {
             cout << "Enter mandi ID to update: ";
             getline(cin, id);
@@ -314,28 +354,14 @@ void mandiMenu(string username)
                 cout << "Mandi not found or update failed.\n";
             }
         }
-        else if (choice == 5)
-        {
-            crop.viewAllCrops();
-        }
-        else if (choice == 6)
-        {
-            cout << "Enter crop name to search: ";
-            getline(cin, cropName);
-
-            if (cropName.empty() || hasSpace(cropName))
-                cout << "Enter a valid single-word crop name.\n";
-            else
-                crop.searchCrop(cropName);
-        }
-        else if (choice == 7)
+        else if (choice == 4)
         {
             cout << "Logged out successfully.\n";
             return;
         }
         else
         {
-            cout << "Invalid choice. Select 1 to 7.\n";
+            cout << "Invalid choice. Select 1 to 4.\n";
         }
     }
 }
@@ -486,4 +512,3 @@ int main()
 
     return 0;
 }
-

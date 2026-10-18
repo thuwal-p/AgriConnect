@@ -3,9 +3,11 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <string>
 
 using namespace std;
 
+// DEFAULT CONSTRUCTOR
 Mandi::Mandi()
 {
     mandiName = "";
@@ -15,6 +17,7 @@ Mandi::Mandi()
     buyingPrices.clear();
 }
 
+// PARAMETERIZED CONSTRUCTOR
 Mandi::Mandi(string u, string p, string name, string loc,
              vector<string> c, vector<double> prices, int cap)
     : User(u, p)
@@ -26,6 +29,7 @@ Mandi::Mandi(string u, string p, string name, string loc,
     capacity = cap;
 }
 
+// SETTERS
 void Mandi::setMandiName(string name)
 {
     mandiName = name;
@@ -51,6 +55,7 @@ void Mandi::setCapacity(int cap)
     capacity = cap;
 }
 
+// GETTERS
 string Mandi::getMandiName()
 {
     return mandiName;
@@ -76,6 +81,7 @@ int Mandi::getCapacity()
     return capacity;
 }
 
+// ADD MANDI DETAILS
 bool Mandi::addMandi()
 {
     string id = getUsername();
@@ -83,48 +89,44 @@ bool Mandi::addMandi()
 
     if (id.empty())
     {
-        cout << "Invalid mandi username!" << endl;
+        cout << "Invalid mandi username!\n";
         return false;
     }
 
-    // Check whether details already exist.
     ifstream check("mandi_details.txt");
 
-    while (getline(check, line))
+    if (check)
     {
-        istringstream row(line);
-
-        string u, name, loc, cropData;
-        int cap;
-
-        if (!(row >> u >> name >> loc >> cap >> cropData))
+        while (getline(check, line))
         {
-            continue;
+            istringstream row(line);
+
+            string u;
+
+            if (row >> u && u == id)
+            {
+                check.close();
+                cout << "Mandi details already exist!\n";
+                return false;
+            }
         }
 
-        if (u == id)
-        {
-            check.close();
-            cout << "Mandi details already exist!" << endl;
-            return false;
-        }
+        check.close();
     }
-
-    check.close();
 
     int numberOfCrops;
 
-    cout << "Enter Mandi Name: ";
+    cout << "Enter Mandi Name (one word): ";
     cin >> mandiName;
 
-    cout << "Enter Location: ";
+    cout << "Enter Location (one word): ";
     cin >> location;
 
     cout << "Enter Mandi Capacity: ";
 
     if (!(cin >> capacity) || capacity <= 0)
     {
-        cout << "Invalid capacity!" << endl;
+        cout << "Invalid capacity!\n";
         return false;
     }
 
@@ -132,7 +134,7 @@ bool Mandi::addMandi()
 
     if (!(cin >> numberOfCrops) || numberOfCrops <= 0)
     {
-        cout << "Invalid number of crops!" << endl;
+        cout << "Invalid number of crops!\n";
         return false;
     }
 
@@ -144,14 +146,14 @@ bool Mandi::addMandi()
         string crop;
         double price;
 
-        cout << "Enter crop name: ";
+        cout << "Enter crop " << i + 1 << " name: ";
         cin >> crop;
 
         cout << "Enter buying price per kg: ";
 
         if (!(cin >> price) || price <= 0)
         {
-            cout << "Invalid price!" << endl;
+            cout << "Invalid price!\n";
             return false;
         }
 
@@ -159,43 +161,40 @@ bool Mandi::addMandi()
         buyingPrices.push_back(price);
     }
 
-    ofstream file("mandi_details.txt", ios::app);
+    ofstream output("mandi_details.txt", ios::app);
 
-    if (!file)
+    if (!output)
     {
-        cout << "Unable to open mandi details file!" << endl;
+        cout << "Unable to open mandi details file!\n";
         return false;
     }
 
-    file << id << " "
-         << mandiName << " "
-         << location << " "
-         << capacity << " ";
+    output << id << " " << mandiName << " "
+           << location << " " << capacity << " ";
 
     for (int i = 0; i < (int)crops.size(); i++)
     {
-        file << crops[i] << ":" << buyingPrices[i];
+        if (i > 0)
+            output << ",";
 
-        if (i < (int)crops.size() - 1)
-        {
-            file << ",";
-        }
+        output << crops[i] << ":" << buyingPrices[i];
     }
 
-    file << "\n";
-    file.close();
+    output << "\n";
+    output.close();
 
-    cout << "Mandi details added successfully!" << endl;
+    cout << "Mandi details added successfully!\n";
     return true;
 }
 
+// VIEW MANDI DETAILS
 bool Mandi::viewMandi(string id)
 {
     ifstream file("mandi_details.txt");
 
     if (!file)
     {
-        cout << "Unable to open mandi details file!" << endl;
+        cout << "Unable to open mandi details file!\n";
         return false;
     }
 
@@ -205,36 +204,51 @@ bool Mandi::viewMandi(string id)
     {
         istringstream row(line);
 
-        string u, name, loc, cropData;
+        string u, name, loc, data;
         int cap;
 
-        if (!(row >> u >> name >> loc >> cap >> cropData))
-        {
+        if (!(row >> u >> name >> loc >> cap))
             continue;
-        }
+
+        getline(row, data);
+
+        // Remove leading spaces from crop data.
+        size_t start = data.find_first_not_of(" \t");
+
+        if (start == string::npos)
+            data = "";
+        else
+            data = data.substr(start);
 
         if (u == id)
         {
-            cout << "\n===== MY MANDI DETAILS =====" << endl;
-            cout << "Username: " << u << endl;
-            cout << "Mandi Name: " << name << endl;
-            cout << "Location: " << loc << endl;
-            cout << "Capacity: " << cap << endl;
-            cout << "Crop Buying Prices:" << endl;
+            cout << "\n===== MY MANDI DETAILS =====\n";
+            cout << "Username: " << u << "\n";
+            cout << "Mandi Name: " << name << "\n";
+            cout << "Location: " << loc << "\n";
+            cout << "Capacity: " << cap << "\n";
+            cout << "Crop Buying Prices:\n";
 
-            stringstream ss(cropData);
-            string item;
-
-            while (getline(ss, item, ','))
+            if (data.empty())
             {
-                size_t pos = item.find(':');
+                cout << "No crop listings available.\n";
+            }
+            else
+            {
+                stringstream ss(data);
+                string item;
 
-                if (pos != string::npos)
+                while (getline(ss, item, ','))
                 {
-                    cout << item.substr(0, pos)
-                         << " - Rs. "
-                         << item.substr(pos + 1)
-                         << " per kg" << endl;
+                    size_t pos = item.find(':');
+
+                    if (pos != string::npos)
+                    {
+                        cout << item.substr(0, pos)
+                             << " - Rs. "
+                             << item.substr(pos + 1)
+                             << " per kg\n";
+                    }
                 }
             }
 
@@ -247,73 +261,201 @@ bool Mandi::viewMandi(string id)
     return false;
 }
 
-bool Mandi::updateMandi(string id, string name, string loc)
+// UPDATE MANDI DETAILS
+bool Mandi::updateMandi(string id)
 {
     ifstream file("mandi_details.txt");
 
     if (!file)
     {
-        cout << "Unable to open mandi details file!" << endl;
+        cout << "Unable to open mandi details file!\n";
         return false;
     }
 
     string ids[100];
     string names[100];
     string locations[100];
-    string cropData[100];
+    string data[100];
     int capacities[100];
 
     string line;
     int count = 0;
-    bool found = false;
+    int recordIndex = -1;
 
     while (getline(file, line))
     {
         istringstream row(line);
 
-        string u, oldName, oldLoc, data;
+        string u, name, loc, cropData;
         int cap;
 
-        if (!(row >> u >> oldName >> oldLoc >> cap >> data))
-        {
+        if (!(row >> u >> name >> loc >> cap))
             continue;
-        }
+
+        getline(row, cropData);
+
+        size_t start = cropData.find_first_not_of(" \t");
+
+        if (start == string::npos)
+            cropData = "";
+        else
+            cropData = cropData.substr(start);
 
         if (count >= 100)
         {
             file.close();
-            cout << "Too many mandi records!" << endl;
+            cout << "Too many mandi records!\n";
             return false;
         }
 
-        if (u == id)
-        {
-            oldName = name;
-            oldLoc = loc;
-            found = true;
-        }
-
         ids[count] = u;
-        names[count] = oldName;
-        locations[count] = oldLoc;
+        names[count] = name;
+        locations[count] = loc;
         capacities[count] = cap;
-        cropData[count] = data;
+        data[count] = cropData;
+
+        if (u == id && recordIndex == -1)
+            recordIndex = count;
 
         count++;
     }
 
     file.close();
 
-    if (!found)
+    if (recordIndex == -1)
     {
+        cout << "Mandi details not found. Add them first.\n";
         return false;
     }
+
+    int r = recordIndex;
+
+    cout << "\n===== UPDATE MANDI DETAILS =====\n";
+
+    cout << "Current name: " << names[r] << "\n";
+    cout << "Enter new name (one word): ";
+    cin >> names[r];
+
+    cout << "Current location: " << locations[r] << "\n";
+    cout << "Enter new location (one word): ";
+    cin >> locations[r];
+
+    cout << "Current capacity: " << capacities[r] << "\n";
+    cout << "Enter new capacity: ";
+
+    if (!(cin >> capacities[r]) || capacities[r] <= 0)
+    {
+        cout << "Invalid capacity!\n";
+        return false;
+    }
+
+    string cropNames[100];
+    string cropPrices[100];
+    int cropCount = 0;
+
+    stringstream ss(data[r]);
+    string item;
+
+    while (getline(ss, item, ',') && cropCount < 100)
+    {
+        size_t pos = item.find(':');
+
+        if (pos != string::npos)
+        {
+            cropNames[cropCount] = item.substr(0, pos);
+            cropPrices[cropCount] = item.substr(pos + 1);
+            cropCount++;
+        }
+    }
+
+    if (cropCount > 0)
+    {
+        cout << "\n===== EXISTING CROP LISTINGS =====\n";
+
+        for (int i = 0; i < cropCount; i++)
+        {
+            cout << i + 1 << ". "
+                 << cropNames[i]
+                 << " - Rs. " << cropPrices[i]
+                 << " per kg\n";
+        }
+
+        int choice;
+
+        cout << "\nUpdate a crop listing?\n";
+        cout << "1. Yes\n";
+        cout << "2. No\n";
+        cout << "Enter choice: ";
+
+        if (!(cin >> choice))
+        {
+            cout << "Invalid choice!\n";
+            return false;
+        }
+
+        if (choice == 1)
+        {
+            int cropChoice;
+
+            cout << "Enter crop number to update: ";
+
+            if (!(cin >> cropChoice) ||
+                cropChoice < 1 || cropChoice > cropCount)
+            {
+                cout << "Invalid crop number!\n";
+                return false;
+            }
+
+            string newCrop;
+            double newPrice;
+
+            cout << "Enter new crop name (one word): ";
+            cin >> newCrop;
+
+            cout << "Enter new buying price per kg: ";
+
+            if (!(cin >> newPrice) || newPrice <= 0)
+            {
+                cout << "Invalid price!\n";
+                return false;
+            }
+
+            cropNames[cropChoice - 1] = newCrop;
+
+            stringstream priceStream;
+            priceStream << newPrice;
+
+            cropPrices[cropChoice - 1] = priceStream.str();
+        }
+        else if (choice != 2)
+        {
+            cout << "Invalid choice!\n";
+            return false;
+        }
+    }
+    else
+    {
+        cout << "No existing crop listings found.\n";
+    }
+
+    stringstream newData;
+
+    for (int i = 0; i < cropCount; i++)
+    {
+        if (i > 0)
+            newData << ",";
+
+        newData << cropNames[i]
+                << ":" << cropPrices[i];
+    }
+
+    data[r] = newData.str();
 
     ofstream output("mandi_details.txt");
 
     if (!output)
     {
-        cout << "Unable to update mandi details file!" << endl;
+        cout << "Unable to save mandi details!\n";
         return false;
     }
 
@@ -323,12 +465,11 @@ bool Mandi::updateMandi(string id, string name, string loc)
                << names[i] << " "
                << locations[i] << " "
                << capacities[i] << " "
-               << cropData[i] << "\n";
+               << data[i] << "\n";
     }
 
     output.close();
 
-    cout << "Mandi details updated successfully!" << endl;
+    cout << "Mandi details updated successfully!\n";
     return true;
 }
-

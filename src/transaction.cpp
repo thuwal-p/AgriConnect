@@ -125,6 +125,8 @@ void TransactionManager::deleteTransaction(int id){
                 this->transactions[j] = this->transactions[j + 1];
             }
 
+            this->transactions.pop_back();
+
             cout << "Transaction deleted successfully." << endl;
             return;
         }

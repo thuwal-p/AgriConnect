@@ -1,3 +1,4 @@
+
 #ifndef MANDI_H
 #define MANDI_H
 
@@ -13,31 +14,29 @@ private:
     string mandiName;
     string location;
     vector<string> crops;
+    vector<double> buyingPrices;
     int capacity;
 
 public:
-    // Constructors
     Mandi();
     Mandi(string u, string p, string name, string loc,
-          vector<string> crops, int capacity);
+          vector<string> crops, vector<double> prices, int capacity);
 
-    // Setters
     void setMandiName(string name);
     void setLocation(string loc);
     void setCrops(vector<string> crops);
+    void setBuyingPrices(vector<double> prices);
     void setCapacity(int capacity);
 
-    // Getters
     string getMandiName();
     string getLocation();
     vector<string> getCrops();
+    vector<double> getBuyingPrices();
     int getCapacity();
 
-    // Mandi management functions
     bool addMandi();
     bool viewMandi(string id);
     bool updateMandi(string id, string name, string loc);
-    bool searchMandi(string id);
 };
 
 #endif

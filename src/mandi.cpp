@@ -1,32 +1,32 @@
+
 #include "../include/mandi.h"
 #include <iostream>
 #include <fstream>
-#include <vector>
-#include <string>
+#include <sstream>
+#include <limits>
 
 using namespace std;
 
-// Default constructor
 Mandi::Mandi()
 {
     mandiName = "";
     location = "";
-    crops = {};
+    crops.clear();
+    buyingPrices.clear();
     capacity = 0;
 }
 
-// Parameterized constructor
 Mandi::Mandi(string u, string p, string name, string loc,
-             vector<string> crops, int capacity)
+             vector<string> c, vector<double> prices, int cap)
     : User(u, p)
 {
     mandiName = name;
     location = loc;
-    this->crops = crops;
-    this->capacity = capacity;
+    crops = c;
+    buyingPrices = prices;
+    capacity = cap;
 }
 
-// Setters
 void Mandi::setMandiName(string name)
 {
     mandiName = name;
@@ -42,12 +42,16 @@ void Mandi::setCrops(vector<string> c)
     crops = c;
 }
 
-void Mandi::setCapacity(int c)
+void Mandi::setBuyingPrices(vector<double> prices)
 {
-    capacity = c;
+    buyingPrices = prices;
 }
 
-// Getters
+void Mandi::setCapacity(int cap)
+{
+    capacity = cap;
+}
+
 string Mandi::getMandiName()
 {
     return mandiName;
@@ -63,25 +67,31 @@ vector<string> Mandi::getCrops()
     return crops;
 }
 
+vector<double> Mandi::getBuyingPrices()
+{
+    return buyingPrices;
+}
+
 int Mandi::getCapacity()
 {
     return capacity;
 }
 
-// Add mandi
 bool Mandi::addMandi()
 {
     string id = getUsername();
-    string u, name, loc, cropList;
+    string u, name, loc, cropData;
     int cap;
 
     if (id == "" || mandiName == "" || location == "")
         return false;
 
-    // Check for duplicate mandi
+    if (crops.size() != buyingPrices.size())
+        return false;
+
     ifstream check("mandi_details.txt");
 
-    while (check >> u >> name >> loc >> cap >> cropList)
+    while (check >> u >> name >> loc >> cap >> cropData)
     {
         if (u == id)
         {
@@ -91,7 +101,6 @@ bool Mandi::addMandi()
     }
     check.close();
 
-    // Save mandi details
     ofstream file("mandi_details.txt", ios::app);
 
     if (!file)
@@ -100,9 +109,12 @@ bool Mandi::addMandi()
     file << id << " " << mandiName << " "
          << location << " " << capacity << " ";
 
-    for (const string& crop : crops)
+    for (int i = 0; i < (int)crops.size(); i++)
     {
-        file << crop << ",";
+        file << crops[i] << ":" << buyingPrices[i];
+
+        if (i < (int)crops.size() - 1)
+            file << ",";
     }
 
     file << "\n";
@@ -111,17 +123,17 @@ bool Mandi::addMandi()
     return true;
 }
 
-// View mandi
 bool Mandi::viewMandi(string id)
 {
     ifstream file("mandi_details.txt");
-    string u, name, loc, cropList;
+
+    string u, name, loc, cropData;
     int cap;
 
     if (!file)
         return false;
 
-    while (file >> u >> name >> loc >> cap >> cropList)
+    while (file >> u >> name >> loc >> cap >> cropData)
     {
         if (u == id)
         {
@@ -129,7 +141,22 @@ bool Mandi::viewMandi(string id)
             cout << "Name: " << name << endl;
             cout << "Location: " << loc << endl;
             cout << "Capacity: " << cap << endl;
-            cout << "Accepted Crops: " << cropList << endl;
+            cout << "Crop Buying Prices:" << endl;
+
+            stringstream ss(cropData);
+            string item;
+
+            while (getline(ss, item, ','))
+            {
+                size_t pos = item.find(':');
+
+                if (pos != string::npos)
+                {
+                    cout << item.substr(0, pos)
+                         << " - Rs. " << item.substr(pos + 1)
+                         << endl;
+                }
+            }
 
             file.close();
             return true;
@@ -140,13 +167,6 @@ bool Mandi::viewMandi(string id)
     return false;
 }
 
-// Search mandi
-bool Mandi::searchMandi(string id)
-{
-    return viewMandi(id);
-}
-
-// Update mandi name and location
 bool Mandi::updateMandi(string id, string name, string loc)
 {
     ifstream file("mandi_details.txt");
@@ -154,14 +174,13 @@ bool Mandi::updateMandi(string id, string name, string loc)
     if (!file)
         return false;
 
-    string ids[100], names[100], locations[100], cropLists[100];
-    string u, oldName, oldLoc, cropList;
+    string ids[100], names[100], locations[100], cropData[100];
     int capacities[100];
-    int cap;
-    int count = 0;
+    string u, oldName, oldLoc, data;
+    int cap, count = 0;
     bool found = false;
 
-    while (file >> u >> oldName >> oldLoc >> cap >> cropList)
+    while (file >> u >> oldName >> oldLoc >> cap >> data)
     {
         if (count >= 100)
         {
@@ -180,7 +199,7 @@ bool Mandi::updateMandi(string id, string name, string loc)
         names[count] = oldName;
         locations[count] = oldLoc;
         capacities[count] = cap;
-        cropLists[count] = cropList;
+        cropData[count] = data;
         count++;
     }
 
@@ -200,7 +219,7 @@ bool Mandi::updateMandi(string id, string name, string loc)
                << names[i] << " "
                << locations[i] << " "
                << capacities[i] << " "
-               << cropLists[i] << "\n";
+               << cropData[i] << "\n";
     }
 
     output.close();

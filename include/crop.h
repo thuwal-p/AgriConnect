@@ -8,22 +8,21 @@ class Crop
 {
 private:
     int cropId;
-    std::string cropName;
-    float quantity;
-    std::string category;
+    string cropName;
+    float quantity;//this is float bc we will input the qty in kilos, so for eg 23.5 kgs
+    string category;
 
 public:
     Crop();
-    Crop(int id, std::string name, float qty, std::string cat);
+    Crop(int id, string name, float qty, string cat);
 
     void addCrop();
     void viewCrop();
     void updateCrop();
-
     int getCropId();
-    std::string getCropName();
+    string getCropName();
     float getQuantity();
-    std::string getCategory();
+    string getCategory();
 };
 
 #endif

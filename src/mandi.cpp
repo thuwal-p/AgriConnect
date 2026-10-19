@@ -66,12 +66,12 @@ string Mandi::getLocation()
     return location;
 }
 
-vector<string> Mandi::getCrops()
+vector<string> Mandi::getCrops() const
 {
     return crops;
 }
 
-vector<double> Mandi::getBuyingPrices()
+vector<double> Mandi::getBuyingPrices() const
 {
     return buyingPrices;
 }

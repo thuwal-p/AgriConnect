@@ -31,13 +31,13 @@ public:
 
     string getMandiName();
     string getLocation();
-    vector<string> getCrops();
-    vector<double> getBuyingPrices();
+    vector<string> getCrops() const;
+    vector<double> getBuyingPrices() const;
     int getCapacity();
 
     bool addMandi();
     bool viewMandi(string id);
-    bool updateMandi(string id, string name, string loc);
+    bool updateMandi(string id);//, string name, string loc);
 };
 
 #endif

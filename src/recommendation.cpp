@@ -41,3 +41,33 @@ double ScoreCalculator:: CalcScore(int quantity, double buyingPrice)
 {
     return quantity*buyingPrice;
 }
+
+vector<double> ScoreCalculator::calculateScores(
+    const vector<Mandi>& Mandis,
+    string CropName,
+    int Quantity)
+{
+    vector<double> scores;
+
+    for (const Mandi& mandi : Mandis)
+    {
+        vector<string> crops = mandi.getCrops();
+        vector<double> prices = mandi.getBuyingPrices();
+
+        for (int i = 0; i < crops.size(); i++)
+        {
+            if (crops[i] == CropName)
+            {
+                double price = prices[i];
+
+                double score = CalcScore(Quantity, price);
+
+                scores.push_back(score);
+
+                break;
+            }
+        }
+    }
+
+    return scores;
+}

@@ -18,6 +18,7 @@ class CropMatching{
 class ScoreCalculator{
     public:
         double CalcScore(int Quantity, double buyingPrice);
+        vector<double> calculateScores (const vector<Mandi>& Mandis,string CropName,int Quantity);
 };
 
 class MaxHeap{};

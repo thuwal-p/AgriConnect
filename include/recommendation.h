@@ -9,16 +9,15 @@ using namespace std;
 
 class CropMatching{
     private:
-        unordered_map<string, vector<Mandi>> cropMap;
-        vector<Mandi> filterByCrop(string cropName);
-        vector<Mandi> filterByCapacity(vector<Mandi>Mandis,int Quantity);
+        vector<Mandi> filterByCrop(string cropName,const vector<Mandi>&Mandis);
+        vector<Mandi> filterByCapacity(int Quantity,const vector<Mandi>&Mandis);
     public:
-        vector<Mandi> getMatchedMandis(vector<Mandi>Mandis,int Quantity,string CropName);
+        vector<Mandi> getMatchedMandis(const vector<Mandi>&Mandis,int Quantity,string CropName);
 };
 
 class ScoreCalculator{
     public:
-        double CalcScore();
+        double CalcScore(int Quantity, double buyingPrice);
 };
 
 class MaxHeap{};

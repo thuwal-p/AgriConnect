@@ -261,6 +261,52 @@ bool Mandi::viewMandi(string id)
     return false;
 }
 
+vector<Mandi> Mandi::getAllMandis()
+{
+    vector<Mandi> allMandis;
+
+    ifstream file("mandi_details.txt");
+
+    if (!file.is_open())
+    {
+        return allMandis;
+    }
+
+    string id, name, loc, cropData;
+    int capacity;
+
+    while (file >> id >> name >> loc >> capacity >> cropData)
+    {
+        vector<string> crops;
+        vector<double> prices;
+
+        stringstream ss(cropData);
+        string cropPrice;
+
+        while (getline(ss, cropPrice, ','))
+        {
+            size_t colon = cropPrice.find(':');
+
+            if (colon != string::npos)
+            {
+                string crop = cropPrice.substr(0, colon);
+                double price = stod(cropPrice.substr(colon + 1));
+
+                crops.push_back(crop);
+                prices.push_back(price);
+            }
+        }
+
+        Mandi mandi(id, "", name, loc, crops, prices, capacity);
+
+        allMandis.push_back(mandi);
+    }
+
+    file.close();
+
+    return allMandis;
+}
+
 // UPDATE MANDI DETAILS
 bool Mandi::updateMandi(string id)
 {

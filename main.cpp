@@ -3,6 +3,7 @@
 #include "include/farmer.h"
 #include "include/mandi.h"
 #include "include/cropinfo.h"
+#include "include/recommendation.h"
 #include <iostream>
 #include <string>
 #include <vector>
@@ -54,7 +55,8 @@ void farmerMenu(string username)
         cout << "5. View My Crops\n";
         cout << "6. Update My Crop Listing\n";
         cout << "7. Remove My Crop Listing\n";
-        cout << "8. Logout\n";
+        cout << "8. Get Mandi Recommendations\n";
+        cout << "9. Logout\n";
         cout << "Enter choice: ";
 
         if (!readInteger(choice))
@@ -147,7 +149,82 @@ void farmerMenu(string username)
 
             crop.removeCrop(username, cropName);
         }
+
         else if (choice == 8)
+        {
+            vector<CropInfo> myCrops = crop.getMyCrops(username);
+            if (myCrops.empty())
+            {
+            cout << "You have not listed any crops yet.\n";
+            continue;
+            }
+
+            cout << "\n===== SELECT CROP =====\n";
+            for (int i = 0; i < myCrops.size(); i++)
+            {
+            cout << i + 1 << ". "
+             << myCrops[i].getCropName()
+             << " - "
+             << myCrops[i].getQuantity()
+             << " kg\n";
+            }
+            int cropChoice;
+
+            cout << "Enter crop choice: ";
+
+            if (!readInteger(cropChoice))
+                return;
+
+            if (cropChoice < 1 || cropChoice > myCrops.size())
+            {
+                cout << "Invalid crop choice.\n";
+                continue;
+            }
+
+            CropInfo selectedCrop = myCrops[cropChoice - 1];
+
+            string selectedCropName = selectedCrop.getCropName();
+            int selectedQuantity = selectedCrop.getQuantity();
+            Mandi mandi;
+            vector<Mandi> allMandis = mandi.getAllMandis();
+            CropMatching matcher;
+            vector<Mandi> matchedMandis = matcher.getMatchedMandis(allMandis,selectedQuantity,selectedCropName);
+
+            ScoreCalculator calculator;
+            vector<double> scores = calculator.calculateScores(matchedMandis,selectedCropName,selectedQuantity);
+
+            MaxHeap heap;
+            vector<Mandi> topMandis = heap.getTopMandis(matchedMandis, scores,3);
+
+            cout << "\n===== RECOMMENDED MANDIS =====\n";
+
+            for (int i = 0; i < topMandis.size(); i++)
+            {
+                Mandi m = topMandis[i];
+
+                cout << "\n" << i + 1 << ". " << m.getMandiName() << endl;
+                cout << "   Location: " << m.getLocation() << endl;
+                cout << "   Current Capacity: " << m.getCapacity() << " kg" << endl;
+
+                vector<string> crops = m.getCrops();
+                vector<double> prices = m.getBuyingPrices();
+
+                for (int j = 0; j < crops.size(); j++)
+                {
+                    if (crops[j] == selectedCropName)
+                    {
+                        double revenue = selectedQuantity * prices[j];
+
+                        cout << "   Estimated Revenue: Rs. "
+                            << revenue << endl;
+
+                        break;
+                    }
+                }
+            }
+        }
+
+        else if (choice == 9)
         {
             cout << "Logged out successfully.\n";
             return;

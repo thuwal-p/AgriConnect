@@ -1,0 +1,2 @@
+farmer1@gov.in rice 500
+pp crop1 100

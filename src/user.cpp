@@ -36,7 +36,7 @@ void UserAuthentication::loadFarmers()
     file.close();
 }
 
-void UserAuthentication::loadMandis()
+void UserAuthentication::loadMandis()//read from file and and write into theunordered map  container 
 {
     ifstream file("mandis.txt");
     string u, p;
@@ -49,7 +49,7 @@ void UserAuthentication::loadMandis()
     file.close();
 }
 
-bool UserAuthentication::farmerUsernameExists(string u)
+bool UserAuthentication::farmerUsernameExists(string u)//duplicate check while registrarion
 {
     if (farmerUsers.count(u) == 1)
         return true;
@@ -96,7 +96,7 @@ bool UserAuthentication::registerFarmer(string u, string p)
     if (farmerUsers.count(u) == 1)
         return false;
 
-    ofstream file("farmers.txt", ios::app);
+    ofstream file("farmers.txt", ios::app);//file is opened in append mode
 
     if (!file)
         return false;

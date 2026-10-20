@@ -2,6 +2,7 @@
 #include<string>
 #include<unordered_map>
 #include<vector>
+#include <stdexcept>
 #include "mandi.h"
 #include "farmer.h"
 
@@ -21,5 +22,14 @@ class ScoreCalculator{
         vector<double> calculateScores (const vector<Mandi>& Mandis,string CropName,int Quantity);
 };
 
-class MaxHeap{};
+class MaxHeap
+{
+private:
+    vector<Mandi> mandis;
+    vector<double> scores;
 
+public:
+    void insert(Mandi mandi, double score);
+    Mandi extractMax();
+    vector<Mandi> getTopMandis(const vector<Mandi>& Mandis,const vector<double>& scores,int n);//this will return the top n mandis extracted from maxheap
+};

@@ -129,6 +129,34 @@ void CropInfo::viewMyCrops(string id)
         cout << "You have not listed any crops yet.\n";
 }
 
+vector<CropInfo> CropInfo::getMyCrops(string id)
+{
+    vector<CropInfo> myCrops;
+
+    ifstream file("crops.txt");
+
+    if (!file.is_open())
+    {
+        return myCrops;
+    }
+
+    string farmer, crop;
+    int qty;
+
+    while (file >> farmer >> crop >> qty)
+    {
+        if (farmer == id)
+        {
+            CropInfo c(farmer, crop, qty);
+            myCrops.push_back(c);
+        }
+    }
+
+    file.close();
+
+    return myCrops;
+}
+
 // UPDATE CROP
 bool CropInfo::updateCrop(string id, string target, int qty)
 {

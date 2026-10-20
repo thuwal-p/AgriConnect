@@ -1,10 +1,9 @@
 
 #ifndef CROPINFO_H
 #define CROPINFO_H
-
+#include<vector>
 #include <string>
 using namespace std;
-
 class CropInfo
 {
 private:
@@ -25,6 +24,7 @@ public:
 
     bool addCrop();
     void viewMyCrops(string id);
+    vector<CropInfo> getMyCrops(string id);
     bool updateCrop(string id, string target, int qty);
     bool removeCrop(string id, string target);
 };

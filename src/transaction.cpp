@@ -10,8 +10,11 @@ Transaction::Transaction(){
     status = "Pending";
 }
 
-Transaction::Transaction(int id, string farmer, string buyer, string crop, float qty, float pr ){
-    this->transactionId = id;
+Transaction::Transaction(string farmer, string buyer, string crop, float qty, float pr)
+{
+    static int nextId = 1;
+
+    this->transactionId = nextId++;
     this->farmerName = farmer;
     this->buyerName = buyer;
     this->cropName = crop;
@@ -31,12 +34,6 @@ void Transaction::displayTransaction(){
     cout << "Status: " << this->status << endl;
 }
 
-void Transaction::updateStatus(string newStatus){
-    this->status = newStatus;
-
-    cout << "Status updated successfully." << endl;
-    cout << "Updated status: " << this->status << endl;
-}
 
 
 void Transaction::completeTransaction(){
@@ -89,18 +86,7 @@ string Transaction::getStatus(){
     return this->status;
 }
 
-void TransactionManager::updateTransactionStatus(int id, string status){
-    int n =this->transactions.size();
-    for(int i = 0; i < n; i++)
-    {
-        if(this->transactions[i].getTransactionId() == id) {
-            cout<<"transaction found";
-            this->transactions[i].updateStatus(status);
-            return;
-        }
-    }
-    cout << "Transaction not found." << endl;
-}
+
 
 
 void TransactionManager::completeTransaction(int id){

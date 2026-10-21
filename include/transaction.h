@@ -20,11 +20,10 @@ private:
 public:
     Transaction();
 
-    Transaction(int id, string farmer, string buyer, string crop, float qty, float pr);
+    Transaction(string farmer, string buyer, string crop, float qty, float pr);
 
     //transaction operations
     void displayTransaction();
-    void updateStatus(string newStatus);
     void completeTransaction();
 
     //getters
@@ -47,7 +46,7 @@ public:
 
     void displayAllTransactions();
 
-    void updateTransactionStatus(int id, string status);
+   
 
     void completeTransaction(int id);
 

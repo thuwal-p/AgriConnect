@@ -38,7 +38,6 @@ public:
     bool viewMandi(string id);
     bool updateMandi(string id);
     bool updateMandiCapacity(string id, int newCapacity);
-    //, string name, string loc);
     vector<Mandi> getAllMandis();
 };
 

@@ -1,2 +1,2 @@
 mandi1 mandiA delhi 200 crop1:25,crop2:30
-mandi2 mandiB hld 260 crop1:35
+mandi2 mandiB hld 180 crop1:35

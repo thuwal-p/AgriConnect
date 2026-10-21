@@ -115,8 +115,8 @@ void CropInfo::viewMyCrops(string id)
     {
         if (farmer == id)
         {
-            cout << "\nFarmer ID: " << farmer << endl;
-            cout << "Crop: " << crop << endl;
+            //cout << "Farmer ID: " << farmer << endl;
+            cout << "Crop Name: " << crop << endl;
             cout << "Quantity: " << qty << " kg\n";
             cout << "----------------------\n";
             found = true;

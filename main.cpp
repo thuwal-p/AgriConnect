@@ -47,17 +47,27 @@ void farmerMenu(string username)
 
     while (true)
     {
-        cout << "\n===== FARMER MENU =====\n";
-        cout << "1. Add Farmer Details\n";
-        cout << "2. View My Farmer Details\n";
-        cout << "3. Update Farmer Details\n";
-        cout << "4. Add Crop for Sale\n";
-        cout << "5. View My Crops\n";
-        cout << "6. Update My Crop Listing\n";
-        cout << "7. Remove My Crop Listing\n";
-        cout << "8. Get Mandi Recommendations\n";
-        cout << "9. Logout\n";
-        cout << "Enter choice: ";
+        cout << "\n";
+        cout << "============================================================\n";
+        cout << "                    AGRICONNECT\n";
+        cout << "             Farmer-Mandi Marketplace\n";
+        cout << "============================================================\n";
+        cout << "\n";
+        cout << "                    FARMER DASHBOARD\n";
+        cout << "------------------------------------------------------------\n";
+        cout << "\n";
+        cout << "  1. Add Farmer Details\n";
+        cout << "  2. View My Farmer Details\n";
+        cout << "  3. Update Farmer Details\n";
+        cout << "  4. Add Crop for Sale\n";
+        cout << "  5. View My Crops\n";
+        cout << "  6. Update My Crop Listing\n";
+        cout << "  7. Remove My Crop Listing\n";
+        cout << "  8. Get Mandi Recommendations\n";
+        cout << "  9. Logout\n";
+        cout << "\n";
+        cout << "------------------------------------------------------------\n";
+        cout << "  Enter your choice: ";
 
         if (!readInteger(choice))
             return;
@@ -122,6 +132,10 @@ void farmerMenu(string username)
         }
         else if (choice == 5)
         {
+            cout << "============================================================\n";
+            cout << "                 YOUR CROPS FOR SALE\n";
+            cout << "============================================================\n";
+
             crop.viewMyCrops(username);
         }
         else if (choice == 6)
@@ -159,19 +173,26 @@ void farmerMenu(string username)
             continue;
             }
 
-            cout << "\n===== SELECT CROP =====\n";
+            cout << "\n";
+            cout << "============================================================\n";
+            cout << "                 MANDI RECOMMENDATIONS\n";
+            cout << "============================================================\n";
+            cout << "\n";
+            cout << "  YOUR CROP LISTINGS\n";
+            cout << "  ----------------------------------------------------------\n";
+
             for (int i = 0; i < myCrops.size(); i++)
             {
-            cout << i + 1 << ". "
-             << myCrops[i].getCropName()
-             << " - "
-             << myCrops[i].getQuantity()
-             << " kg\n";
+                cout << "  [" << i + 1 << "] "
+                    << myCrops[i].getCropName()
+                    << " - "
+                    << myCrops[i].getQuantity()
+                    << " kg\n";
             }
+
             int cropChoice;
 
-            cout << "Enter crop choice: ";
-
+            cout << "\n  Select a crop: ";
             if (!readInteger(cropChoice))
                 return;
 
@@ -202,8 +223,11 @@ void farmerMenu(string username)
                 continue;
             }
 
-            cout << "\n===== RECOMMENDED MANDIS =====\n";
-
+            cout << "\n";
+            cout << "============================================================\n";
+            cout << "                  RECOMMENDED MANDIS\n";
+            cout << "============================================================\n";
+            cout << "\n";
             for (int i = 0; i < topMandis.size(); i++)
             {
                 Mandi m = topMandis[i];
@@ -255,11 +279,22 @@ void farmerMenu(string username)
             if (updated)
             {
                 cout << "Mandi capacity updated successfully.\n";
+
+                bool removed = crop.removeCrop(username, selectedCropName);
+
+                if (removed)
+                {
+                    cout << "Crop sold successfully.\n";
+                }
+                else
+                {
+                    cout << "Mandi updated, but crop listing could not be removed.\n";
+                }
             }
             else
             {
                 cout << "Failed to update mandi capacity.\n";
-            }      
+            }
         }
         else if (choice == 9){
         
@@ -282,12 +317,22 @@ void mandiMenu(string username)
 
     while (true)
     {
-        cout << "\n===== MANDI MENU =====\n";
-        cout << "1. Add Mandi Details\n";
-        cout << "2. View My Mandi Details\n";
-        cout << "3. Update Mandi Details\n";
-        cout << "4. Logout\n";
-        cout << "Enter choice: ";
+        cout << "\n";
+        cout << "============================================================\n";
+        cout << "                       AGRICONNECT\n";
+        cout << "                Farmer-Mandi Marketplace\n";
+        cout << "============================================================\n";
+        cout << "\n";
+        cout << "                     MANDI DASHBOARD\n";
+        cout << "------------------------------------------------------------\n";
+        cout << "\n";
+        cout << "  1. Add Mandi Details\n";
+        cout << "  2. View Mandi Details\n";
+        cout << "  3. Update Mandi Details\n";
+        cout << "  4. Logout\n";
+        cout << "\n";
+        cout << "------------------------------------------------------------\n";
+        cout << "  Enter your choice: ";
 
         if (!readInteger(choice))
             return;
@@ -330,13 +375,23 @@ int main()
 
     while (true)
     {
-        cout << "\n===== AGRICONNECT =====\n";
-        cout << "1. Farmer Login\n";
-        cout << "2. Farmer Registration\n";
-        cout << "3. Mandi Login\n";
-        cout << "4. Mandi Registration\n";
-        cout << "5. Exit\n";
-        cout << "Enter choice: ";
+        cout << "\n";
+        cout << "============================================================\n";
+        cout << "                       AGRICONNECT\n";
+        cout << "                Farmer-Mandi Marketplace\n";
+        cout << "============================================================\n";
+        cout << "\n";
+        cout << "                         MAIN MENU\n";
+        cout << "------------------------------------------------------------\n";
+        cout << "\n";
+        cout << "  1. Farmer Login\n";
+        cout << "  2. Mandi Login\n";
+        cout << "  3. Farmer Registration\n";
+        cout << "  4. Mandi Registration\n";
+        cout << "  5. Exit\n";
+        cout << "\n";
+        cout << "------------------------------------------------------------\n";
+        cout << "  Enter your choice: ";
 
         if (!readInteger(choice))
             return 0;

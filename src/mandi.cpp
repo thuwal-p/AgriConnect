@@ -519,3 +519,72 @@ bool Mandi::updateMandi(string id)
     cout << "Mandi details updated successfully!\n";
     return true;
 }
+
+bool Mandi::updateMandiCapacity(string id, int newCapacity)
+{
+    ifstream file("mandi_details.txt");
+
+    if (!file.is_open())
+    {
+        return false;
+    }
+
+    vector<string> records;
+    string line;
+    bool found = false;
+
+    while (getline(file, line))
+    {
+        stringstream ss(line);
+
+        string mandiID;
+        string name;
+        string location;
+        int capacity;
+        string cropData;
+
+        ss >> mandiID >> name >> location >> capacity >> cropData;
+
+        if (mandiID == id)
+        {
+            capacity = newCapacity;
+            found = true;
+
+            string updatedLine =
+                mandiID + " " +
+                name + " " +
+                location + " " +
+                to_string(capacity) + " " +
+                cropData;
+
+            records.push_back(updatedLine);
+        }
+        else
+        {
+            records.push_back(line);
+        }
+    }
+
+    file.close();
+
+    if (!found)
+    {
+        return false;
+    }
+
+    ofstream outFile("mandi_details.txt");
+
+    if (!outFile.is_open())
+    {
+        return false;
+    }
+
+    for (string record : records)
+    {
+        outFile << record << endl;
+    }
+
+    outFile.close();
+
+    return true;
+}

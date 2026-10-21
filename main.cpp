@@ -182,11 +182,12 @@ void farmerMenu(string username)
             }
 
             CropInfo selectedCrop = myCrops[cropChoice - 1];
-
             string selectedCropName = selectedCrop.getCropName();
             int selectedQuantity = selectedCrop.getQuantity();
+
             Mandi mandi;
             vector<Mandi> allMandis = mandi.getAllMandis();
+
             CropMatching matcher;
             vector<Mandi> matchedMandis = matcher.getMatchedMandis(allMandis,selectedQuantity,selectedCropName);
 
@@ -195,6 +196,11 @@ void farmerMenu(string username)
 
             MaxHeap heap;
             vector<Mandi> topMandis = heap.getTopMandis(matchedMandis, scores,3);
+            if (topMandis.empty())
+            {
+                cout << "\nNo suitable mandis found.\n";
+                continue;
+            }
 
             cout << "\n===== RECOMMENDED MANDIS =====\n";
 
@@ -222,17 +228,47 @@ void farmerMenu(string username)
                     }
                 }
             }
-        }
+            int mandiChoice;
 
-        else if (choice == 9)
-        {
+            cout << "\nEnter mandi choice: ";
+
+            if (!readInteger(mandiChoice))
+                return;
+
+            if (mandiChoice < 1 || mandiChoice > topMandis.size())
+            {
+                cout << "Invalid mandi choice.\n";
+                continue;
+            }
+
+            Mandi selectedMandi = topMandis[mandiChoice - 1];
+
+            cout << "\nYou selected: "<< selectedMandi.getMandiName() << endl;
+            int newCapacity = selectedMandi.getCapacity() - selectedQuantity;
+
+            selectedMandi.setCapacity(newCapacity);
+
+            cout << "Updated Mandi Capacity: " << selectedMandi.getCapacity() << " kg" << endl;   
+
+            bool updated = mandi.updateMandiCapacity(
+            selectedMandi.getUsername(),newCapacity);
+            if (updated)
+            {
+                cout << "Mandi capacity updated successfully.\n";
+            }
+            else
+            {
+                cout << "Failed to update mandi capacity.\n";
+            }      
+        }
+        else if (choice == 9){
+        
             cout << "Logged out successfully.\n";
             return;
         }
+        
         else
-        {
             cout << "Invalid choice. Select 1 to 8.\n";
-        }
     }
 }
 

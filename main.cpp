@@ -436,7 +436,7 @@ int main()
         if (!readInteger(choice))
             return 0;
 
-        if (choice == 1 || choice == 3)
+        if (choice == 1 || choice == 2)
         {
             cout << "Enter username: ";
             cin >> username;
@@ -450,7 +450,7 @@ int main()
                 continue;
             }
 
-            if (choice == 3 && !auth.mandiUsernameExists(username))
+            if (choice == 2 && !auth.mandiUsernameExists(username))
             {
                 cout << "Mandi username not found. Register first.\n";
                 continue;
@@ -498,7 +498,7 @@ int main()
                 }
             }
         }
-        else if (choice == 2 || choice == 4)
+        else if (choice == 3 || choice == 4)
         {
             cout << "Choose username: ";
             cin >> username;
@@ -506,7 +506,7 @@ int main()
             cout << "Choose password: ";
             cin >> password;
 
-            if (choice == 2)
+            if (choice == 3)
             {
                 if (auth.registerFarmer(username, password))
                 {

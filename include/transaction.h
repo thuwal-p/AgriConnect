@@ -39,20 +39,30 @@ public:
 class TransactionManager
 {
 private:
-    vector<Transaction> transactions;
+
+    struct Node
+    {
+        Transaction data;
+        Node* next;
+    };
+
+    Node* head;
 
 public:
+
+    TransactionManager();
+
     void addTransaction(Transaction t);
 
     void displayAllTransactions();
-
-   
 
     void completeTransaction(int id);
 
     void searchTransaction(int id);
 
     void deleteTransaction(int id);
+
+    ~TransactionManager();
 };
 
 #endif

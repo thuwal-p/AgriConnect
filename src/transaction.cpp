@@ -42,19 +42,63 @@ void Transaction::completeTransaction(){
     cout << "Transaction completed successfully." << endl;
 }
 
-void TransactionManager::addTransaction(Transaction t){
-
-    this->transactions.push_back(t);
-    cout << "Transaction added successfully." << endl;
+TransactionManager::TransactionManager()
+{
+    head = nullptr;
 }
 
-void TransactionManager::displayAllTransactions(){
-    int n = this->transactions.size();
+TransactionManager::~TransactionManager()
+{
+    Node* current = head;
 
-    for(int i = 0; i < n; i++){
-        this->transactions[i].displayTransaction();
-        cout << endl;
+    while (current != nullptr)
+    {
+        Node* nextNode = current->next;
+        delete current;
+        current = nextNode;
     }
+}
+
+void TransactionManager::addTransaction(Transaction t)
+{
+    Node* newNode = new Node;
+
+    newNode->data = t;
+    newNode->next = head;
+
+    head = newNode;
+}
+
+void TransactionManager::displayAllTransactions()
+{
+    if (head == nullptr)
+    {
+        cout << "No transactions found.\n";
+        return;
+    }
+
+    Node* current = head;
+    double totalRevenue = 0;
+
+    while (current != nullptr)
+    {
+        current->data.displayTransaction();
+
+        double revenue =
+            current->data.getQuantity() * current->data.getPrice();
+
+        totalRevenue += revenue;
+
+        cout << "Total Revenue: Rs. " << revenue << endl;
+        cout << "----------------------\n";
+
+        current = current->next;
+    }
+
+    cout << "\n============================================================\n";
+    cout << "Total Revenue from All Transactions: Rs. "
+         << totalRevenue << endl;
+    cout << "============================================================\n";
 }
 
 int Transaction::getTransactionId(){
@@ -89,48 +133,80 @@ string Transaction::getStatus(){
 
 
 
-void TransactionManager::completeTransaction(int id){
-    int n =this->transactions.size();
-    for(int i = 0; i < n; i++){
-        if(this->transactions[i].getTransactionId() == id){
-            this->transactions[i].completeTransaction();
+void TransactionManager::completeTransaction(int id)
+{
+    Node* current = head;
+
+    while (current != nullptr)
+    {
+        if (current->data.getTransactionId() == id)
+        {
+            current->data.completeTransaction();
             return;
         }
+
+        current = current->next;
     }
-    cout << "Transaction not found." << endl;
+
+    cout << "Transaction not found.\n";
 }
 
-void TransactionManager::searchTransaction(int id){
-    int n = this->transactions.size();
+void TransactionManager::searchTransaction(int id)
+{
+    Node* current = head;
 
-    for(int i = 0; i < n; i++){
-        if(this->transactions[i].getTransactionId() == id){
-            cout << "Transaction found." << endl;
-            this->transactions[i].displayTransaction();
+    while (current != nullptr)
+    {
+        if (current->data.getTransactionId() == id)
+        {
+            current->data.displayTransaction();
             return;
         }
+
+        current = current->next;
     }
 
-    cout << "Transaction not found";
+    cout << "Transaction not found.\n";
 }
 
-void TransactionManager::deleteTransaction(int id){
-    int n = this->transactions.size();
-
-    for(int i = 0; i < n; i++){
-        if(this->transactions[i].getTransactionId() == id){
-            for(int j = i; j < n - 1; j++){
-                this->transactions[j] = this->transactions[j + 1];
-            }
-
-            this->transactions.pop_back();
-
-            cout << "Transaction deleted successfully." << endl;
-            return;
-        }
+void TransactionManager::deleteTransaction(int id)
+{
+    if (head == nullptr)
+    {
+        cout << "No transactions found.\n";
+        return;
     }
 
-    cout << "Transaction not found." << endl;
+    if (head->data.getTransactionId() == id)
+    {
+        Node* temp = head;
+        head = head->next;
+        delete temp;
+
+        cout << "Transaction deleted successfully.\n";
+        return;
+    }
+
+    Node* current = head;
+
+    while (current->next != nullptr)
+    {
+        if (current->next->data.getTransactionId() == id)
+        {
+            Node* temp = current->next;
+
+            current->next = temp->next;
+
+            delete temp;
+
+            cout << "Transaction deleted successfully.\n";
+            return;
+        }
+
+        current = current->next;
+    }
+
+    cout << "Transaction not found.\n";
 }
 
 

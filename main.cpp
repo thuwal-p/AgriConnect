@@ -4,6 +4,7 @@
 #include "include/mandi.h"
 #include "include/cropinfo.h"
 #include "include/recommendation.h"
+#include "include/transaction.h"
 #include <iostream>
 #include <string>
 #include <vector>
@@ -41,6 +42,8 @@ void farmerMenu(string username)
 {
     Farmer farmer(username, "", "", "");
     CropInfo crop;
+    TransactionManager transactionManager;
+
 
     int choice, quantity;
     string name, location, cropName;
@@ -64,7 +67,8 @@ void farmerMenu(string username)
         cout << "  6. Update My Crop Listing\n";
         cout << "  7. Remove My Crop Listing\n";
         cout << "  8. Get Mandi Recommendations\n";
-        cout << "  9. Logout\n";
+        cout << "  9. View Transaaction\n";
+        cout << "  10. Logout\n";
         cout << "\n";
         cout << "------------------------------------------------------------\n";
         cout << "  Enter your choice: ";
@@ -282,9 +286,34 @@ void farmerMenu(string username)
 
                 bool removed = crop.removeCrop(username, selectedCropName);
 
-                if (removed)
+               if (removed)
                 {
+                    double sellingPrice = 0;
+
+                    vector<string> crops = selectedMandi.getCrops();
+                    vector<double> prices = selectedMandi.getBuyingPrices();
+
+                    for (int i = 0; i < crops.size(); i++)
+                    {
+                        if (crops[i] == selectedCropName)
+                        {
+                            sellingPrice = prices[i];
+                            break;
+                        }
+                    }
+
+                    Transaction transaction(
+                        username,
+                        selectedMandi.getMandiName(),
+                        selectedCropName,
+                        selectedQuantity,
+                        sellingPrice
+                    );
+
+                    transaction.completeTransaction();
+                    transactionManager.addTransaction(transaction);
                     cout << "Crop sold successfully.\n";
+                    cout << "Transaction recorded successfully.\n";
                 }
                 else
                 {
@@ -296,7 +325,17 @@ void farmerMenu(string username)
                 cout << "Failed to update mandi capacity.\n";
             }
         }
-        else if (choice == 9){
+        else if (choice == 9)
+        {
+            cout << "\n";
+            cout << "============================================================\n";
+            cout << "                    MY TRANSACTIONS\n";
+            cout << "============================================================\n";
+            cout << "\n";
+
+            transactionManager.displayAllTransactions();
+        }
+        else if (choice == 10){
         
             cout << "Logged out successfully.\n";
             return;
@@ -366,6 +405,7 @@ void mandiMenu(string username)
 int main()
 {
     UserAuthentication auth;
+    TransactionManager transactionManager;
 
     auth.loadFarmers();
     auth.loadMandis();

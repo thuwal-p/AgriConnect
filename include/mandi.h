@@ -37,8 +37,11 @@ public:
     bool addMandi();
     bool viewMandi(string id);
     bool updateMandi(string id);
+
     bool updateMandiCapacity(string id, int newCapacity);
     vector<Mandi> getAllMandis();
+
+
 };
 
 #endif

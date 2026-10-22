@@ -1,4 +1,3 @@
-
 #include "../include/mandi.h"
 #include <iostream>
 #include <fstream>

@@ -32,4 +32,8 @@ public:
     void insert(Mandi mandi, double score);
     Mandi extractMax();
     vector<Mandi> getTopMandis(const vector<Mandi>& Mandis,const vector<double>& scores,int n);//this will return the top n mandis extracted from maxheap
+
 };
+
+
+

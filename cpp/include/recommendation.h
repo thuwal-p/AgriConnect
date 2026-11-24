@@ -5,8 +5,24 @@
 #include <stdexcept>
 #include "mandi.h"
 #include "farmer.h"
+#include "road_graph.h"
 
 using namespace std;
+
+
+struct ProfitRecommendation
+{
+    Mandi mandi;
+    double price;
+    double distanceKm;
+    double transportCost;
+    double estimatedRevenue;
+    double netProfit;
+};
+
+vector<ProfitRecommendation> getProfitRecommendations(
+    vector<Mandi> mandis, string farmerCity, string cropName,
+    int quantity, double transportRatePerKm = 18.0);
 
 class CropMatching{
     private:

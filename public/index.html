@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AgriConnect</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <header class="navbar">
+    <a class="logo" href="#">Agri<span>Connect</span></a>
+    <a href="#about">About the project</a>
+  </header>
+
+  <main>
+    <section class="hero">
+      <p class="eyebrow">A smarter agricultural marketplace</p>
+      <h1>Connecting farmers<br>to the right mandis.</h1>
+      <p class="intro">AgriConnect brings farmers and mandis together. Farmers can discover suitable markets for their crops, compare mandi information and explore recommendations to make better selling decisions.</p>
+
+      <div class="account-options">
+        <article class="account-card">
+          <h2>Farmer</h2>
+          <p>Find suitable mandis and manage your crops.</p>
+          <div class="account-actions">
+            <button class="button" data-role="Farmer" data-action="Login">Login</button>
+            <button class="button secondary" data-role="Farmer" data-action="Register">Register</button>
+          </div>
+        </article>
+        <article class="account-card">
+          <h2>Mandi</h2>
+          <p>Manage mandi details, crops, prices and capacity.</p>
+          <div class="account-actions">
+            <button class="button" data-role="Mandi" data-action="Login">Login</button>
+            <button class="button secondary" data-role="Mandi" data-action="Register">Register</button>
+          </div>
+        </article>
+      </div>
+      <p class="hint">Choose your role to get started.</p>
+    </section>
+
+    <section class="about" id="about">
+      <p class="eyebrow">About AgriConnect</p>
+      <h2>What can you expect?</h2>
+      <p class="about-intro">AgriConnect is designed to simplify the connection between agricultural producers and markets through crop management, mandi discovery and data-driven recommendations.</p>
+      <div class="features">
+        <article><span>01</span><div><h3>For farmers</h3><p>Manage crop details, find mandis that accept your produce and view ranked recommendations.</p></div></article>
+        <article><span>02</span><div><h3>For mandis</h3><p>Manage mandi information, accepted crops, buying prices and available capacity.</p></div></article>
+        <article><span>03</span><div><h3>Smarter recommendations</h3><p>Compare suitable mandis using crop and market information. Recommendations currently rank mandis by crop compatibility, available capacity and expected selling value.</p></div></article>
+      </div>
+    </section>
+  </main>
+
+  <footer><a class="logo" href="#">Agri<span>Connect</span></a><p>Better connections. Better opportunities.</p></footer>
+
+  <div class="overlay" id="accountModal" hidden>
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <button class="close" id="closeModal" aria-label="Close">&times;</button>
+      <p class="eyebrow">Welcome to AgriConnect</p>
+      <h2 id="modalTitle">Login</h2>
+      <form id="accountForm"></form>
+      
+    </section>
+  </div>
+</body>
+</html>

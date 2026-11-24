@@ -1,69 +1,30 @@
-# Prerequisites
-*.d
 
-# Compiled Object files
-*.slo
-*.lo
-*.o
-*.obj
+# Node.js dependencies
+node_modules/
 
-# Precompiled Headers
-*.gch
-*.pch
-
-# Linker files
-*.ilk
-
-# Debugger Files
-*.pdb
-
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
-*.so.*
-
-
-# Fortran module files
-*.mod
-*.smod
-
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
-
-# Executables
+# Compiled C++ files
+build/*
+!build/.gitkeep
 *.exe
-*.out
-*.app
+*.dll
+*.o
+*.a
 
-# Build directories
-build/
-Build/
-build-*/
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
 
-# CMake generated files
-CMakeFiles/
-CMakeCache.txt
-cmake_install.cmake
-Makefile
-install_manifest.txt
-compile_commands.json
+# Local databases
+data/*.txt
+!data/.gitkeep
 
-# Temporary files
-*.tmp
-*.log
-*.bak
-*.swp
+# Old root-level databases
+/*.txt
 
-# vcpkg
-vcpkg_installed/
+# Local test datasets
+files_test_data/
 
-# debug information files
-*.dwo
-
-# test output & cache
-Testing/
-.cache/
+# OS-generated files
+.DS_Store
+Thumbs.db

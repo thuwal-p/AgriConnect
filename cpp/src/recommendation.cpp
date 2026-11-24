@@ -1,4 +1,60 @@
 #include "../include/recommendation.h"
+#include <algorithm>
+#include <cctype>
+#include <cmath>
+
+static string normalizeRecommendationText(string value)
+{
+    transform(value.begin(), value.end(), value.begin(), [](unsigned char c) { return (char)tolower(c); });
+    replace(value.begin(), value.end(), '_', ' ');
+    size_t first = value.find_first_not_of(" \t\r\n");
+    if (first == string::npos) return "";
+    size_t last = value.find_last_not_of(" \t\r\n");
+    return value.substr(first, last - first + 1);
+}
+
+vector<ProfitRecommendation> getProfitRecommendations(
+    vector<Mandi> mandis, string farmerCity, string cropName,
+    int quantity, double transportRatePerKm)
+{
+    vector<ProfitRecommendation> results;
+    if (quantity <= 0) return results;
+    RoadGraph roadGraph;
+    farmerCity = normalizeRecommendationText(farmerCity);
+    cropName = normalizeRecommendationText(cropName);
+
+    for (auto& mandi : mandis)
+    {
+        if (mandi.getCapacity() < quantity) continue;
+        vector<string> crops = mandi.getCrops();
+        vector<double> prices = mandi.getBuyingPrices();
+        double price = 0.0;
+        for (size_t i = 0; i < crops.size() && i < prices.size(); ++i)
+        {
+            if (normalizeRecommendationText(crops[i]) == cropName)
+            {
+                price = prices[i];
+                break;
+            }
+        }
+        if (price <= 0.0) continue;
+
+        double distance = roadGraph.shortestDistance(farmerCity, mandi.getLocation());
+        // No coordinate fallback: recommendations require a known road-graph route.
+        if (distance < 0.0) continue;
+        double revenue = quantity * price;
+        double transportCost = distance * transportRatePerKm;
+        results.push_back({mandi, price, distance, transportCost, revenue, revenue - transportCost});
+    }
+
+    stable_sort(results.begin(), results.end(), [](const ProfitRecommendation& a, const ProfitRecommendation& b)
+    {
+        if (fabs(a.netProfit - b.netProfit) > 0.01) return a.netProfit > b.netProfit;
+        return a.distanceKm < b.distanceKm;
+    });
+    return results;
+}
+
 vector<Mandi> CropMatching :: filterByCrop(string cropName,const vector<Mandi>&Mandis)
 {
     vector<Mandi>result;
@@ -74,12 +130,11 @@ void MaxHeap::insert(Mandi mandi, double score)
     mandis.push_back(mandi);
     scores.push_back(score);
 
-    int i = scores.size() - 1;
+    int i = scores.size() - 1;//this finds the index of the newly inserted element
 
     while (i > 0)
     {
         int parent = (i - 1) / 2;
-
         if (scores[parent] >= scores[i])
             break;
 
@@ -96,6 +151,7 @@ Mandi MaxHeap::extractMax()
     {
     throw runtime_error("Heap is empty");
     }
+    
     Mandi maxMandi = mandis[0];
 
     mandis[0] = mandis.back();

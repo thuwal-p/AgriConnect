@@ -1,3 +1,0 @@
-mandi1 12345
-mandi2 34
-mandi 123

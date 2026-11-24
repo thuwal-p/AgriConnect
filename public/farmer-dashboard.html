@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Farmer Dashboard | AgriConnect</title>
+  <link rel="stylesheet" href="dashboard.css">
+  <script src="dashboard.js" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="index.html">Agri<span>Connect</span></a>
+      <div class="profile-mini">
+        <div class="avatar">RK</div>
+        <div><strong id="sidebarFarmerName">Farmer</strong><small>Farmer account</small></div>
+      </div>
+      <p class="nav-label">MENU</p>
+      <nav class="side-nav" aria-label="Farmer dashboard navigation">
+        <button class="nav-link active" data-section="overview"><span class="nav-icon">⌂</span> Overview</button>
+        <button class="nav-link" data-section="profile"><span class="nav-icon">♙</span> My Profile</button>
+        <button class="nav-link" data-section="crops"><span class="nav-icon">♧</span> My Crops</button>
+        <button class="nav-link" data-section="mandis"><span class="nav-icon">⌖</span> Find Mandis</button>
+        <button class="nav-link" data-section="recommendations"><span class="nav-icon">↗</span> Recommendations</button>
+        <button class="nav-link" data-section="transactions"><span class="nav-icon">▤</span> Transactions</button>
+      </nav>
+      <div class="sidebar-bottom">
+        <a href="index.html" class="back-link">← Back to home</a>
+        <button class="logout-button" id="logoutButton">Log out</button>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation">☰</button>
+        <div><span class="topbar-kicker">FARMER PORTAL</span><strong id="pageTitle">Overview</strong></div>
+        <div class="topbar-right"><span class="status-dot"></span><span id="accountLabel">Signed in</span><div class="avatar small">RK</div></div>
+      </header>
+
+      <div class="content-wrap">
+        <section class="dashboard-section active" id="overview">
+          <div class="hero-banner">
+            <div class="hero-copy"><p class="hero-kicker">✦ A SMARTER WAY TO TRADE</p><h1>Better harvests.<br>Better connections.</h1><p class="hero-sub">Connect directly with mandis, compare crop prices, and make every harvest count — all in one place.</p><button class="primary-button" data-go="recommendations">Find the best mandi →</button></div>
+            <div class="hero-art"><svg viewBox="0 0 520 330" aria-label="Farmer working in the field" role="img">
+<defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#cfe8a8"/><stop offset="1" stop-color="#b6d98a"/></linearGradient></defs>
+<circle cx="330" cy="130" r="120" fill="url(#sky)"/>
+<path d="M0 250 Q140 190 330 215 T520 190 V330 H0Z" fill="#4b8a58"/>
+<g stroke="#8fc275" stroke-width="16" fill="none" opacity=".75"><path d="M-10 300 Q200 230 540 255"/><path d="M-10 270 Q200 205 540 225" opacity=".6"/></g>
+<g stroke="#e9c76a" stroke-width="3" stroke-linecap="round"><path d="M60 280v-34M78 276v-30M96 272v-34M114 268v-30M132 264v-34M150 262v-30"/></g>
+<g fill="#e9c76a"><ellipse cx="60" cy="242" rx="4" ry="9"/><ellipse cx="78" cy="242" rx="4" ry="9"/><ellipse cx="96" cy="234" rx="4" ry="9"/><ellipse cx="114" cy="236" rx="4" ry="9"/><ellipse cx="132" cy="230" rx="4" ry="9"/><ellipse cx="150" cy="232" rx="4" ry="9"/></g>
+<!-- farmer -->
+<g transform="translate(300 90)">
+<ellipse cx="40" cy="62" rx="62" ry="10" fill="#e8c36b"/><path d="M-6 60 Q40 20 86 60Z" fill="#f2d27c"/>
+<circle cx="40" cy="78" r="22" fill="#c98f66"/><path d="M18 74 Q40 60 62 74 L62 68 Q40 50 18 68Z" fill="#f2d27c"/>
+<rect x="14" y="98" width="52" height="78" rx="18" fill="#3a6fb0"/><rect x="22" y="104" width="36" height="40" rx="8" fill="#e8ecef"/>
+<rect x="18" y="170" width="18" height="76" rx="8" fill="#2c4f7e"/><rect x="44" y="170" width="18" height="76" rx="8" fill="#2c4f7e"/>
+<path d="M60 110 L110 150" stroke="#c98f66" stroke-width="14" stroke-linecap="round"/>
+<path d="M104 70 L128 252" stroke="#7a5230" stroke-width="7" stroke-linecap="round"/>
+<path d="M92 244 Q128 226 150 252" fill="none" stroke="#8a929a" stroke-width="7" stroke-linecap="round"/>
+</g>
+<g transform="translate(430 170)" fill="#e0a64a"><path d="M0 70V0" stroke="#5f9a4a" stroke-width="4"/><ellipse cx="-6" cy="8" rx="5" ry="11"/><ellipse cx="7" cy="14" rx="5" ry="11"/><ellipse cx="-4" cy="28" rx="5" ry="11"/></g>
+</svg></div>
+          </div>
+          <div class="welcome-row">
+            <div><p class="eyebrow">YOUR FARMER DASHBOARD</p><h1 id="welcomeTitle">Welcome!</h1><p class="muted">Here's what's happening with your crops and market activity.</p></div>
+            <button class="primary-button" data-go="crops">＋ Add a crop</button>
+          </div>
+
+          <div class="stat-grid">
+            <article class="stat-card"><div class="stat-icon green">♧</div><p>Total crops</p><strong id="totalCropCount">0</strong><small>In your crop list</small></article>
+            <article class="stat-card"><div class="stat-icon yellow">⌖</div><p>Matching mandis</p><strong id="matchingMandiCount">0</strong><small>Accepting your crops</small></article>
+            <article class="stat-card"><div class="stat-icon blue">↗</div><p>Recommendations</p><strong id="recommendationCount">0</strong><small>Eligible mandis for selected crop</small></article>
+            <article class="stat-card"><div class="stat-icon purple">₹</div><p>Recent transactions</p><strong id="transactionCount">0</strong><small>Orders placed</small></article>
+          </div>
+
+          <div class="overview-grid">
+            <article class="panel">
+              <div class="panel-heading"><div><h2>My crops</h2><p class="muted">Crops currently listed in your profile</p></div><button class="text-button" data-go="crops">View all →</button></div>
+              <div class="crop-list" id="overviewCropList"><p class="empty-state">Loading your crop records…</p></div>
+            </article>
+            
+          </div>
+
+        </section>
+
+        <section class="dashboard-section" id="profile">
+          <div class="section-heading"><p class="eyebrow">ACCOUNT DETAILS</p><h1>My Profile</h1><p class="muted">View your farmer information.</p></div>
+          <article class="panel profile-panel">
+            <div class="profile-header"><div class="avatar large" id="farmerAvatar">F</div><div><h2 id="profileFarmerName">Farmer</h2><p class="muted" id="profileFarmerId">Farmer ID</p></div></div>
+            <div class="detail-grid">
+              <div><small>Full name</small><strong id="profileNameValue">—</strong></div>
+              <div><small>Farmer ID</small><strong id="profileIdValue">—</strong></div>
+              <div><small>Phone number</small><strong id="profilePhoneValue">—</strong></div>
+              <div><small>Location</small><strong id="profileLocationValue">—</strong></div>
+            </div>
+            <p class="inline-note">Your profile information is loaded from your AgriConnect account.</p>
+          </article>
+        </section>
+
+        <section class="dashboard-section" id="crops">
+          <div class="section-heading split-heading"><div><p class="eyebrow">CROP MANAGEMENT</p><h1>My Crops</h1><p class="muted">Keep track of the produce you want to sell.</p></div><button class="primary-button" id="addCropButton">＋ Add a crop</button></div>
+          <article class="panel">
+            <div class="table-wrap"><table><thead><tr><th>Crop</th><th>Quantity</th><th>Unit</th><th>Status</th></tr></thead><tbody id="cropTable"><tr><td colspan="4">Loading your crops…</td></tr></tbody></table></div>
+          </article>
+        </section>
+
+        <section class="dashboard-section" id="mandis">
+          <div class="section-heading"><p class="eyebrow">MARKET DISCOVERY</p><h1>Find Mandis</h1><p class="muted">Explore mandis currently registered on AgriConnect.</p></div>
+          <div class="filter-row"><label for="cropFilter">Select crop</label><select id="cropFilter"><option>All crops</option><option>Wheat</option><option>Maize</option><option>Mustard</option></select></div>
+          <div class="mandi-grid" id="farmerMandiGrid"><p class="empty-state">Loading registered mandis…</p></div>
+        </section>
+
+        <section class="dashboard-section" id="recommendations">
+          <div class="section-heading"><p class="eyebrow">SMART MARKET MATCHING</p><h1>Recommendations</h1><p class="muted">Mandis ranked by estimated net profit after road transport costs.</p></div>
+          <article class="panel" id="recommendationPanel"><div class="empty-state">Choose one of your listed crops to find matching mandis.</div></article>
+        </section>
+
+        <section class="dashboard-section" id="transactions">
+          <div class="section-heading"><p class="eyebrow">SALES HISTORY</p><h1>Transactions</h1><p class="muted">Your confirmed purchase orders and their current status.</p></div>
+          <article class="panel">
+            <div class="table-wrap"><table><thead><tr><th>Transaction</th><th>Crop</th><th>Quantity</th><th>Amount</th><th>Status</th></tr></thead><tbody id="farmerOrdersTable"><tr><td colspan="5">No orders placed yet.</td></tr></tbody></table></div>
+            <p class="inline-note">Transaction history will be populated from the existing transaction module.</p>
+          </article>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <div class="modal-backdrop" id="cropModal" hidden>
+    <section class="crop-modal" role="dialog" aria-modal="true" aria-labelledby="cropModalTitle">
+      <button class="modal-close" id="closeCropModal" aria-label="Close">×</button>
+      <p class="eyebrow">CROP MANAGEMENT</p><h2 id="cropModalTitle">Add a crop</h2>
+      <form id="cropForm">
+        <label for="cropName">Crop name</label><input id="cropName" name="cropName" required placeholder="e.g. Rice">
+        <label for="cropQuantity">Quantity (quintals)</label><input id="cropQuantity" name="cropQuantity" type="number" min="1" required placeholder="Enter quantity">
+        <button class="primary-button full" type="submit">Add crop</button>
+      </form>
+      <p class="modal-hint">Your crop will be saved to your AgriConnect records.</p>
+    </section>
+  </div>
+</body>
+</html>

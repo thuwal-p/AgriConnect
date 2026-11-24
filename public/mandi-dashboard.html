@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mandi Dashboard | AgriConnect</title>
+  <link rel="stylesheet" href="dashboard.css">
+  <link rel="stylesheet" href="mandi-dashboard.css">
+  <script src="mandi-dashboard.js" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="index.html">Agri<span>Connect</span></a>
+      <div class="profile-mini">
+        <div class="avatar">HM</div>
+        <div><strong id="sidebarMandiName">Mandi</strong><small>Mandi account</small></div>
+      </div>
+      <p class="nav-label">MENU</p>
+      <nav class="side-nav" aria-label="Mandi dashboard navigation">
+        <button class="nav-link active" data-section="overview"><span class="nav-icon">⌂</span> Overview</button>
+        <button class="nav-link" data-section="profile"><span class="nav-icon">♙</span> Mandi Profile</button>
+        <button class="nav-link" data-section="crops"><span class="nav-icon">♧</span> Crop Management</button>
+        <button class="nav-link" data-section="prices"><span class="nav-icon">₹</span> Price Management</button>
+        <button class="nav-link" data-section="capacity"><span class="nav-icon">▦</span> Capacity Management</button>
+        <button class="nav-link" data-section="transactions"><span class="nav-icon">▤</span> Transactions</button>
+      </nav>
+      <div class="sidebar-bottom">
+        <a href="index.html" class="back-link">← Back to home</a>
+        <button class="logout-button" id="logoutButton">Log out</button>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation">☰</button>
+        <div><span class="topbar-kicker">MANDI PORTAL</span><strong id="pageTitle">Overview</strong></div>
+        <div class="topbar-right"><span class="status-dot"></span><span id="mandiAccountLabel">Signed in</span><div class="avatar small">HM</div></div>
+      </header>
+
+      <div class="content-wrap">
+        <section class="dashboard-section active" id="overview">
+          <div class="hero-banner">
+            <div class="hero-copy"><p class="hero-kicker">✦ YOUR MANDI, CONNECTED</p><h1>More farmers.<br>Better trade.</h1><p class="hero-sub">Keep your capacity and crop prices up to date so nearby farmers can find and sell to your mandi with confidence.</p><button class="primary-button" data-go="capacity">Manage capacity →</button></div>
+            <div class="hero-art"><svg viewBox="0 0 520 330" aria-label="Mandi market" role="img">
+<circle cx="330" cy="130" r="120" fill="#cfe8a8"/>
+<path d="M0 262 Q160 232 330 246 T520 232 V330 H0Z" fill="#4b8a58"/>
+<!-- market hall -->
+<g transform="translate(205 70)">
+<path d="M0 62 L150 62 L170 100 L-20 100Z" fill="#c4553f"/>
+<g fill="#f4efe0"><path d="M-20 100 L10 100 L0 62 Z"/><path d="M30 100 L60 100 L50 62 L30 62Z"/><path d="M80 100 L110 100 L100 62 L80 62Z"/><path d="M130 100 L160 100 L150 62Z"/></g>
+<rect x="-6" y="100" width="162" height="96" fill="#e6d4a8"/><rect x="14" y="116" width="40" height="80" fill="#8a5a3a"/><rect x="72" y="116" width="62" height="42" fill="#2f4b3a"/>
+<text x="72" y="142" font-size="13" font-weight="800" fill="#dff0b8" font-family="Arial">MANDI</text>
+</g>
+<!-- sacks and crates -->
+<g transform="translate(70 214)"><path d="M0 40 Q-4 8 18 0 Q40 8 36 40Z" fill="#d9bf86"/><path d="M44 40 Q40 12 60 4 Q82 12 78 40Z" fill="#cfb078"/><path d="M26 40 Q22 -4 44 -10 Q66 -4 62 40Z" fill="#e3c98f"/></g>
+<g transform="translate(395 232)"><rect width="78" height="42" rx="4" fill="#9a6b3f"/><g fill="#e9c76a"><circle cx="14" cy="-4" r="9"/><circle cx="34" cy="-8" r="9"/><circle cx="54" cy="-4" r="9"/><circle cx="68" cy="-2" r="8"/></g></g>
+<!-- scale -->
+<g transform="translate(470 120)" stroke="#e8ecef" stroke-width="4" fill="none"><path d="M0 0V90M-26 14H26"/><path d="M-26 14l-12 26h24zM26 14l-12 26h24z"/></g>
+</svg></div>
+          </div>
+          <div class="welcome-row">
+            <div><p class="eyebrow">YOUR MANDI DASHBOARD</p><h1 id="mandiWelcome">Welcome!</h1><p class="muted">Manage your mandi information, crop availability and market activity.</p></div>
+            <button class="primary-button" data-go="prices">＋ Update prices</button>
+          </div>
+
+          <div class="stat-grid">
+            <article class="stat-card"><div class="stat-icon green">♧</div><p>Accepted crops</p><strong id="acceptedCropCount">0</strong><small>Currently listed</small></article>
+            <article class="stat-card"><div class="stat-icon yellow">▦</div><p>Available capacity</p><strong id="availableCapacityStat">0</strong><small>Quintals available</small></article>
+            <article class="stat-card"><div class="stat-icon purple">▤</div><p>Transactions</p><strong id="mandiOrderCount">0</strong><small>Orders received</small></article>
+          </div>
+
+          <div class="overview-grid">
+            <article class="panel">
+              <div class="panel-heading"><div><h2>Current crop listings</h2><p class="muted">Crops accepted by your mandi</p></div><button class="text-button" data-go="crops">Manage crops →</button></div>
+              <div class="crop-list" id="overviewCropList"><p class="empty-state">Loading crop listings…</p></div>
+            </article>
+            <article class="panel"><div class="panel-heading"><div><h2>Capacity overview</h2><p class="muted">Current available storage</p></div></div><div class="capacity-number"><strong id="overviewCapacity">—</strong><span>quintals available</span></div><button class="primary-button full" data-go="capacity">Manage capacity</button></article>
+          </div>
+
+        </section>
+
+        <section class="dashboard-section" id="profile">
+          <div class="section-heading"><p class="eyebrow">MANDI INFORMATION</p><h1>Mandi Profile</h1><p class="muted">View the details associated with your mandi account.</p></div>
+          <article class="panel profile-panel">
+            <div class="profile-header"><div class="avatar large" id="mandiAvatar">M</div><div><h2 id="profileMandiName">Mandi</h2><p class="muted" id="profileMandiId">Mandi ID</p></div></div>
+            <div class="detail-grid">
+              <div><small>Mandi name</small><strong id="profileMandiNameValue">—</strong></div>
+              <div><small>Contact person</small><strong id="profileContactPerson">—</strong></div>
+              <div><small>Mandi ID</small><strong id="profileMandiIdValue">—</strong></div>
+              <div><small>Phone number</small><strong id="profileMandiPhone">—</strong></div>
+              <div><small>Location</small><strong id="profileMandiLocation">—</strong></div>
+              <div><small>Available capacity</small><strong id="profileMandiCapacity">—</strong></div>
+            </div>
+            <p class="inline-note">Profile information is loaded from your registered mandi record.</p>
+          </article>
+        </section>
+
+        <section class="dashboard-section" id="crops">
+          <div class="section-heading split-heading"><div><p class="eyebrow">CROP MANAGEMENT</p><h1>Crop Management</h1><p class="muted">Choose which crops your mandi accepts.</p></div><button class="primary-button" id="addCropButton">＋ Add crop</button></div>
+          <article class="panel">
+            <div class="table-wrap"><table><thead><tr><th>Crop</th><th>Buying price</th><th>Capacity allocated</th><th>Status</th></tr></thead><tbody id="mandiCropTable"><tr><td colspan="4">Loading crop listings…</td></tr></tbody></table></div>
+            
+          </article>
+        </section>
+
+        <section class="dashboard-section" id="prices">
+          <div class="section-heading split-heading"><div><p class="eyebrow">MARKET PRICING</p><h1>Price Management</h1><p class="muted">View and update the buying prices offered for crops.</p></div><button class="primary-button" id="updatePriceButton">＋ Update price</button></div>
+          <article class="panel">
+            <div class="table-wrap"><table><thead><tr><th>Crop</th><th>Current buying price</th><th>Unit</th><th>Last updated</th></tr></thead><tbody id="priceTable"><tr><td colspan="4">Loading prices…</td></tr></tbody></table></div>
+            
+          </article>
+        </section>
+
+        <section class="dashboard-section" id="capacity">
+          <div class="section-heading"><p class="eyebrow">STORAGE MANAGEMENT</p><h1>Capacity Management</h1><p class="muted">Monitor total storage and available capacity.</p></div>
+          <div class="capacity-layout">
+            <article class="panel">
+              <h2>Available storage</h2><p class="muted">Remaining capacity from your mandi record</p>
+              <div class="capacity-number big"><strong id="usedCapacity">0</strong><span>quintals occupied</span></div>
+              <div class="progress-track thick"><div class="progress-fill" id="capacityBar" style="width:0%"></div></div>
+              <div class="capacity-legend"><span>Occupied: <b id="usedLegend">0</b> qtl</span><span>Available: <b id="freeLegend">0</b> qtl</span></div>
+            </article>
+            <article class="panel capacity-form-panel">
+              <h2>Update capacity</h2><p class="muted">Set the remaining storage available for new orders.</p>
+              <form id="capacityForm" class="compact-form">
+                <label for="totalCapacity">Total capacity (quintals)</label><input id="totalCapacity" type="number" min="1" value="1000" required>
+                <label for="usedCapacityInput">Currently occupied (quintals)</label><input id="usedCapacityInput" type="number" min="0" value="0" disabled>
+                <button class="primary-button full" type="submit">Save available capacity</button>
+              </form>
+            </article>
+          </div>
+        </section>
+
+        <section class="dashboard-section" id="transactions">
+          <div class="section-heading"><p class="eyebrow">MARKET ACTIVITY</p><h1>Transactions</h1><p class="muted">Review instant orders placed by farmers.</p></div>
+          <article class="panel">
+            <div class="table-wrap"><table><thead><tr><th>Transaction</th><th>Farmer</th><th>Crop</th><th>Quantity</th><th>Amount</th><th>Status</th></tr></thead><tbody id="mandiOrdersTable"><tr><td colspan="6">No orders received yet.</td></tr></tbody></table></div>
+            
+          </article>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <div class="modal-backdrop" id="entryModal" hidden>
+    <section class="crop-modal" role="dialog" aria-modal="true" aria-labelledby="entryModalTitle">
+      <button class="modal-close" id="closeEntryModal" aria-label="Close">×</button>
+      <p class="eyebrow" id="entryEyebrow">MANDI MANAGEMENT</p><h2 id="entryModalTitle">Add crop</h2>
+      <form id="entryForm"></form>
+      <p class="modal-hint" id="entryHint"></p>
+    </section>
+  </div>
+</body>
+</html>

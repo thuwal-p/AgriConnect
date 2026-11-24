@@ -2,6 +2,7 @@
 #include "../include/farmer.h"
 #include <iostream>
 #include <fstream>
+#include <sstream>
 
 using namespace std;
 
@@ -150,4 +151,23 @@ bool Farmer::updateFarmer(string id, string name, string loc)
     output.close();
     return true;
 }
+bool Farmer::getFarmerDetails(string id, string &name, string &loc)
+{
+    ifstream file("farmer_details.txt");
+    if (!file.is_open()) return false;
 
+    string line;
+    while (getline(file, line))
+    {
+        istringstream row(line);
+        string storedId, storedName, storedLocation;
+        if (!(row >> storedId >> storedName >> storedLocation)) continue; // skip bad row
+        if (storedId == id)
+        {
+            name = storedName;
+            loc = storedLocation;
+            return true;
+        }
+    }
+    return false;
+}

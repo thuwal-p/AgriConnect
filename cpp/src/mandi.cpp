@@ -263,46 +263,39 @@ bool Mandi::viewMandi(string id)
 vector<Mandi> Mandi::getAllMandis()
 {
     vector<Mandi> allMandis;
-
     ifstream file("mandi_details.txt");
+    if (!file.is_open()) return allMandis;
 
-    if (!file.is_open())
+    string line;
+    while (getline(file, line))
     {
-        return allMandis;
-    }
+        while (!line.empty() && (line.back() == '\r' || line.back() == ' ' || line.back() == '\t')) line.pop_back();
+        if (line.empty()) continue;
 
-    string id, name, loc, cropData;
-    int capacity;
+        istringstream row(line);
+        string id, name, loc, cropData;
+        int capacity = 0;
+        if (!(row >> id >> name >> loc >> capacity)) continue;   // skip malformed row, keep reading
+        row >> cropData;                                          // a mandi with no crops is still valid
 
-    while (file >> id >> name >> loc >> capacity >> cropData)
-    {
         vector<string> crops;
         vector<double> prices;
-
         stringstream ss(cropData);
         string cropPrice;
-
         while (getline(ss, cropPrice, ','))
         {
             size_t colon = cropPrice.find(':');
-
-            if (colon != string::npos)
+            if (colon == string::npos) continue;
+            try
             {
-                string crop = cropPrice.substr(0, colon);
                 double price = stod(cropPrice.substr(colon + 1));
-
-                crops.push_back(crop);
+                crops.push_back(cropPrice.substr(0, colon));
                 prices.push_back(price);
             }
+            catch (...) { continue; }
         }
-
-        Mandi mandi(id, "", name, loc, crops, prices, capacity);
-
-        allMandis.push_back(mandi);
+        allMandis.push_back(Mandi(id, "", name, loc, crops, prices, capacity));
     }
-
-    file.close();
-
     return allMandis;
 }
 
@@ -542,7 +535,9 @@ bool Mandi::updateMandiCapacity(string id, int newCapacity)
         int capacity;
         string cropData;
 
-        ss >> mandiID >> name >> location >> capacity >> cropData;
+        if (!line.empty() && line.back() == '\r') line.pop_back();
+        stringstream ss2(line);
+        ss2 >> mandiID >> name >> location >> capacity >> cropData;
 
         if (mandiID == id)
         {

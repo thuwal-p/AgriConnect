@@ -1,0 +1,29 @@
+{
+  "name": "agriconnect-local-integration",
+  "version": "1.0.0",
+  "description": "AgriConnect local full-stack demo: existing C++ core with Express API and frontend.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "start": "npm run build:cpp && node server.js",
+    "check": "node --check server.js && node --check public/script.js && node --check public/dashboard.js && node --check public/mandi-dashboard.js",
+    "build:cpp": "g++ -std=c++17 cpp/api.cpp cpp/src/*.cpp -Icpp -o build/AgriConnectAPI"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thuwal-p/AgriConnect.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/thuwal-p/AgriConnect/issues"
+  },
+  "homepage": "https://github.com/thuwal-p/AgriConnect#readme",
+  "dependencies": {
+    "express": "^5.3.0"
+  }
+}

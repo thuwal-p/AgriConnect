@@ -2,6 +2,14 @@
 #include "../include/cropinfo.h"
 #include <iostream>
 #include <fstream>
+#include <sstream>
+#include <algorithm>
+static bool sameText(string a, string b)
+{
+    transform(a.begin(), a.end(), a.begin(), [](unsigned char c){ return (char)tolower(c); });
+    transform(b.begin(), b.end(), b.begin(), [](unsigned char c){ return (char)tolower(c); });
+    return a == b;
+}
 using namespace std;
 
 CropInfo::CropInfo()
@@ -70,7 +78,7 @@ bool CropInfo::addCrop()
 
     while (checkFile >> farmer >> crop >> qty)
     {
-        if (farmer == farmerID && crop == cropName)
+        if (farmer == farmerID && sameText(crop, cropName))
         {
             checkFile.close();
             cout << "Error: You have already listed this crop.\n";
@@ -132,28 +140,18 @@ void CropInfo::viewMyCrops(string id)
 vector<CropInfo> CropInfo::getMyCrops(string id)
 {
     vector<CropInfo> myCrops;
-
     ifstream file("crops.txt");
+    if (!file.is_open()) return myCrops;
 
-    if (!file.is_open())
+    string line;
+    while (getline(file, line))
     {
-        return myCrops;
+        istringstream row(line);
+        string farmer, crop;
+        int qty;
+        if (!(row >> farmer >> crop >> qty)) continue; // skip bad row
+        if (farmer == id) myCrops.push_back(CropInfo(farmer, crop, qty));
     }
-
-    string farmer, crop;
-    int qty;
-
-    while (file >> farmer >> crop >> qty)
-    {
-        if (farmer == id)
-        {
-            CropInfo c(farmer, crop, qty);
-            myCrops.push_back(c);
-        }
-    }
-
-    file.close();
-
     return myCrops;
 }
 
@@ -192,7 +190,7 @@ bool CropInfo::updateCrop(string id, string target, int qty)
         cropNames[count] = crop;
         quantities[count] = oldQty;
 
-        if (farmer == id && crop == target && !found)
+        if (farmer == id && sameText(crop, target) && !found)
         {
             quantities[count] = qty;
             found = true;
@@ -246,7 +244,7 @@ bool CropInfo::removeCrop(string id, string target)
 
     while (file >> farmer >> crop >> qty)
     {
-        if (farmer == id && crop == target && !removed)
+        if (farmer == id && sameText(crop, target) && !removed)
         {
             removed = true;
             continue;

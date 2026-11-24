@@ -22,6 +22,7 @@ public:
 
     string getFarmerName();
     string getLocation();
+    bool getFarmerDetails(string id, string &name, string &loc);
 
     bool addFarmer();
     bool viewFarmer(string id);

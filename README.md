@@ -1,169 +1,131 @@
-# AgriConnect – Smart Agricultural Marketplace System
+AGRICONNECT - EXISTING FULL-STACK PROJECT
+=========================================
 
-## Project Title and Brief Description
+This archive preserves the original AgriConnect project and its C++ classes,
+Express API, browser dashboards, and text-file data storage. No replacement
+project was created.
 
-AgriConnect is a digital agricultural marketplace system designed to connect farmers with mandis and make the buying and selling of farm products more organized.
+STRUCTURE
+---------
+public/                                  Browser frontend files (HTML/CSS/JS)
+cpp/api.cpp                              C++ command-line API adapter
+cpp/main.cpp                             Original terminal application entry point
+cpp/include/ and cpp/src/                Existing C++ classes and implementations
+data/*.txt                               Existing text-file data
+build/                                   Generated C++ executable (not committed)
+server.js                                Express API + static frontend server
 
-The system allows farmers to provide details about their crops, while mandis can provide information such as crop availability, offered prices, and available capacity. AgriConnect helps farmers identify suitable mandis by considering factors such as crop compatibility, price offered, available capacity, and transportation convenience.
+REQUIREMENTS (macOS + VS CODE)
+------------------------------
+- Xcode Command Line Tools (provides clang++)
+- Node.js and npm
+- VS Code (optional editor)
 
-The system also maintains transaction records for future reference.
+BUILD AND RUN
+-------------
+1. Extract the ZIP and open the AgriConnect folder in VS Code.
+2. Open Terminal in the project folder.
+3. Install the Node dependencies:
 
-## Problem Statement / Objective
+   npm install
 
-### Problem Statement
+4. Start the server (this automatically compiles the C++ API before launch):
 
-Farmers often face difficulties in finding suitable buyers, comparing prices at different mandis, maintaining harvest records, and calculating their expected profit. Traditional methods involve manual record keeping and limited organized market information, making it difficult for farmers to decide where to sell their crops.
+   npm start
 
-### Objective
+   The build command intentionally excludes cpp/main.cpp because it is the
+   original terminal application's separate entry point and contains main(). The
+server serves browser files from public/ and runs the C++ program with data/ as
+its working directory so existing text-file paths continue to work.
 
-The main objective of AgriConnect is to provide a centralized digital platform that connects farmers with mandis and simplifies the process of selecting suitable selling options.
+5. Open:
 
-The system aims to:
+   http://localhost:3000
 
-- Manage farmer, mandi, and crop information.
-- Match crops with suitable mandis.
-- Compare factors such as offered price and available capacity.
-- Generate suitable mandi recommendations.
-- Maintain transaction records.
-- Help calculate expected profit by considering selling price and relevant costs.
-- Demonstrate the practical application of Data Structures and Object-Oriented Programming to a real-world problem.
+Health check:
+   http://localhost:3000/api/health
 
-## Team Members
+REBUILD AFTER C++ CHANGES
+-------------------------
+Stop the server, then run npm start again. The start script rebuilds the
+C++ API automatically. On Windows, the server selects build/AgriConnectAPI.exe;
+on macOS/Linux it selects build/AgriConnectAPI.
 
-**Team Name:** Team Geek Coders  
-**Team ID:** T068
+RECOMMENDATION IMPLEMENTATION
+-----------------------------
+- Uses an adjacency-list road graph and Dijkstra with a min-priority queue.
+- The initial road graph contains predefined Uttarakhand / North India routes.
+- Locations are matched by their normalized city name. If the farmer or mandi
+  location is not represented in the road graph, that mandi is omitted rather
+  than assigned a fabricated distance.
+- Eligible mandis must list the requested crop and have enough available
+  capacity.
+- Revenue = quantity (quintals) * buying price (₹/quintal).
+- Transportation is estimated as shortest road distance * ₹18 per kilometre.
+  ₹18/km is an initial project assumption, not a live quote; adjust the
+  transportRate constant in api.cpp when a better local rate is available.
+- Net profit = revenue - estimated transport cost. Results are sorted by net
+  profit, then shorter road distance when profits are effectively equal.
 
-| Team Member | Contribution |
-|---|---|
-| Lavanya Rawat | User Authentication |
-| Kumud Singh | Farmer & Mandi Management |
-| Pranavi Thuwal | Recommendation System |
-| Rishika Gupta | Transaction & Record Management |
+CAPACITY
+--------
+The mandi_details.txt capacity field continues to represent available capacity,
+so existing order placement and recommendation checks remain compatible.
+capacity_details.txt stores total and occupied capacity for registered/updated
+mandis. Available capacity is total minus occupied. Existing records without
+capacity_details.txt are treated as their existing capacity available and zero
+occupied until the mandi edits capacity or places an order.
 
-## Technologies / Tools Used
+CONTACT DETAILS
+---------------
+contact_details.txt stores the farmer phone and mandi contact-person / phone
+fields by account ID. New registrations write these fields, and profiles load
+them from this file. Names and locations continue using underscore-separated
+records to remain compatible with the existing data format.
 
+DATA AND SECURITY NOTES
+-----------------------
+- The project uses local text files and plain-text credentials, as in the
+  original demo. Do not use real passwords or deploy this prototype publicly.
+- Back up farmers.txt, mandis.txt, farmer_details.txt, mandi_details.txt,
+  crops.txt, orders.txt, contact_details.txt and capacity_details.txt before
+  testing account creation, orders or capacity changes.
+- Crop listing and order history remain stored in the existing files.
+- The original terminal application and existing transaction module are kept.
+- Mandi crop and price editing beyond the original registration flow is not
+  implemented by this modification.
+- Transactions use the existing order-file workflow; payment, delivery,
+  cancellation and refunds are outside this prototype.
+- Road distances are predefined estimates, not live map routing.
 
-### Programming Language
+CHANGES IN THIS FIX
+-------------------
+- All .txt readers are now line-based and tolerate CRLF, a UTF-8 BOM, blank and
+  malformed rows (previously one bad row stopped every later record from loading).
+- Crop names are matched case-insensitively (Wheat = wheat) in recommendations and orders.
+- Locations missing from the road graph (e.g. Mumbai, Nainital, Haldwani "hld") use an
+  estimated distance (straight-line x 1.3) from a built-in city table and are labelled
+  "Est. distance". Cities unknown to both tables are still skipped.
+- Data files are normalised to LF line endings with a trailing newline, so new
+  registrations never glue onto the previous record.
+- server.js no longer serves .txt/.cpp/.h/.json files (farmers.txt held passwords).
+- IDs/passwords with spaces are rejected at registration.
+- Dark-green redesign; farmer dashboard has a farmer-in-field banner and the mandi
+  dashboard a mandi-market banner.
 
-- C++
+CITY DROPDOWN (nearest major city)
+----------------------------------
+Registration now asks for the "Nearest major city" from a dropdown (list in script.js,
+matching the coordinate table in api.cpp). The city is stored as the location and used for
+distance. The optional village/town name is stored in village_details.txt and shown on the
+profile. To add a city: add it to the table in api.cpp AND to CITIES in script.js.
 
-### Data Structures
-
-- Hash Maps
-- Priority Queues
-- Linked Lists
-- Queues
-
-### Programming Concepts
-
-- Object-Oriented Programming
-- Classes and Objects
-- Encapsulation
-- Inheritance
-- Searching
-- Sorting
-- File Handling
-
-### Development Tools
--VS Code
--GitHub
--Git Bash
-
-
-## Project Setup / Installation Instructions
-
-
-### Prerequisites
-
-- C++ compiler such as G++
-- Visual Studio Code
-- Git
-- Git Bash
-### Set Up
-1. Clone the repository:
-   https://github.com/thuwal-p/AgriConnect
-2. Navigate to the project directory:
-   cd AgriConnect
-3. Open the project in Visual Studio Code:
-   - Compilation:
-      - Compile the project using a C++ compiler:
-     g++ main.cpp -o AgriConnect
-    - Run the Project:
-      - On macOS/Linux:
-       ./AgriConnect
-       - On Windows:
-       AgriConnect.exe
-   
-
-
-
-
-## Major Features / Modules
-
-### 1. Farmer Module
-
-The Farmer Module allows farmers to:
-
-- Add, view, and update crop details.
-- Manage crop information.
-- View mandi information.
-- View transaction history.
-- Track crop requests and offers.
-
-### 2. Mandi Module
-
-The Mandi Module allows mandi sellers to:
-
-- View available crops.
-- Manage mandi details.
-- Select and accept crop details.
-- Place offers and send requests.
-
-### 3. Recommendation Module
-
-The Recommendation Module helps farmers identify suitable selling options by:
-
-- Comparing crop prices.
-- Checking market prices.
-- Updating costs based on transportation convenience.
-- Calculating expected profit.
-- Recommending the best available option.
-
-### 4. Transaction and Report Module
-
-The Transaction and Report Module manages completed transactions and their records.
-
-Its functions include:
-
-- Completing transactions.
-- Storing transaction details.
-- Viewing transaction history.
-- Generating reports.
-
-### 5. Data Storage
-
-The Data Storage component maintains the information required by the system.
-
-It stores:
-
-- User data, including farmer and mandi details.
-- Crop data, including crop details, quantity, and category.
-- Transaction data, including transaction records and history.
-- Reports and analytical information.
-## Current Project Status / Progress
-
-**Status: In Progress**
-
-The overall system architecture and major modules of AgriConnect have been defined.
-
-The project currently includes the following planned modules:
-
-- Farmer Module
-- Mandi Module
-- Recommendation Module
-- Transaction and Report Module
-- Data Storage
-
-The project structure and required Data Structures and Object-Oriented Programming concepts have been identified. Implementation and integration of the modules are currently in progress.
-
-The next steps include completing module implementation, integrating the modules, testing the complete system, and refining the final implementation.
+CASE-INSENSITIVITY AND LOSS WARNING
+-----------------------------------
+- IDs (farmer/mandi usernames), crop names and city names are case-insensitive
+  everywhere (login, registration duplicate check, add/update/remove crop,
+  recommendations, orders). IDs are stored in lower case. Passwords stay case-sensitive.
+- If transport cost exceeds revenue (negative net profit), the recommendation row is
+  labelled "Transport cost exceeds revenue" and shows "Net loss". If every mandi is a
+  loss, a warning banner appears. Placing a loss-making order asks for extra confirmation.
+  The best-profit highlight is only given to a profitable mandi.

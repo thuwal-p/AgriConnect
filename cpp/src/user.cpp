@@ -1,6 +1,21 @@
 
 #include "../include/user.h"
 
+// Reads one "key value" record per line. Tolerates CRLF, a UTF-8 BOM, blank
+// lines and malformed lines (they are skipped instead of derailing the file).
+static void loadCredentialFile(const char* path, unordered_map<string, User>& out)
+{
+    ifstream file(path);
+    string u, p;
+
+    while (file >> u >> p)
+    {
+        out[u] = User(u, p);
+    }
+
+    file.close();
+}
+
 User::User()
 {
     username = "";
@@ -25,28 +40,12 @@ string User::getPassword()
 
 void UserAuthentication::loadFarmers()
 {
-    ifstream file("farmers.txt");
-    string u, p;
-
-    while (file >> u >> p)
-    {
-        farmerUsers[u] = User(u, p);
-    }
-
-    file.close();
+    loadCredentialFile("farmers.txt", farmerUsers);
 }
 
-void UserAuthentication::loadMandis()//read from file and and write into theunordered map  container 
+void UserAuthentication::loadMandis()
 {
-    ifstream file("mandis.txt");
-    string u, p;
-
-    while (file >> u >> p)
-    {
-        mandiUsers[u] = User(u, p);
-    }
-
-    file.close();
+    loadCredentialFile("mandis.txt", mandiUsers);
 }
 
 bool UserAuthentication::farmerUsernameExists(string u)//duplicate check while registrarion

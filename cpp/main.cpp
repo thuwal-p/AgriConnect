@@ -1,0 +1,546 @@
+#include "include/user.h"
+#include "include/farmer.h"
+#include "include/mandi.h"
+#include "include/cropinfo.h"
+#include "include/recommendation.h"
+#include "include/transaction.h"
+#include <iostream>
+#include <string>
+#include <vector>
+
+using namespace std;
+
+bool hasSpace(string text)
+{
+    int i = 0;
+
+    while (i < (int)text.length())
+    {
+        if (text[i] == ' ' || text[i] == '\t')
+            return true;
+
+        i++;
+    }
+
+    return false;
+}
+
+bool readInteger(int &value)
+{
+    if (!(cin >> value))
+    {
+        cout << "Invalid input. Please restart and enter a whole number.\n";
+        return false;
+    }
+
+    return true;
+}
+
+// FARMER MENU
+void farmerMenu(string username)
+{
+    Farmer farmer(username, "", "", "");
+    CropInfo crop;
+    TransactionManager transactionManager;
+
+
+    int choice, quantity;
+    string name, location, cropName;
+
+    while (true)
+    {
+        cout << "\n";
+        cout << "============================================================\n";
+        cout << "                    AGRICONNECT\n";
+        cout << "             Farmer-Mandi Marketplace\n";
+        cout << "============================================================\n";
+        cout << "\n";
+        cout << "                    FARMER DASHBOARD\n";
+        cout << "------------------------------------------------------------\n";
+        cout << "\n";
+        cout << "  1. Add Farmer Details\n";
+        cout << "  2. View My Farmer Details\n";
+        cout << "  3. Update Farmer Details\n";
+        cout << "  4. Add Crop for Sale\n";
+        cout << "  5. View My Crops\n";
+        cout << "  6. Update My Crop Listing\n";
+        cout << "  7. Remove My Crop Listing\n";
+        cout << "  8. Get Mandi Recommendations\n";
+        cout << "  9. View Transaaction\n";
+        cout << "  10. Logout\n";
+        cout << "\n";
+        cout << "------------------------------------------------------------\n";
+        cout << "  Enter your choice: ";
+
+        if (!readInteger(choice))
+            return;
+
+        if (choice == 1)
+        {
+            cout << "Enter farmer name (one word): ";
+            cin >> name;
+
+            cout << "Enter location (one word): ";
+            cin >> location;
+
+            if (hasSpace(name) || hasSpace(location))
+            {
+                cout << "Enter single-word name and location.\n";
+            }
+            else
+            {
+                farmer.setFarmerName(name);
+                farmer.setLocation(location);
+
+                if (!farmer.addFarmer())
+                    cout << "Could not add details. They may already exist.\n";
+            }
+        }
+        else if (choice == 2)
+        {
+            if (!farmer.viewFarmer(username))
+                cout << "Farmer details not found. Add them first.\n";
+        }
+        else if (choice == 3)
+        {
+            cout << "Enter new name (one word): ";
+            cin >> name;
+
+            cout << "Enter new location (one word): ";
+            cin >> location;
+
+            if (farmer.updateFarmer(username, name, location))
+                cout << "Farmer details updated successfully.\n";
+            else
+                cout << "Farmer not found or update failed.\n";
+        }
+        else if (choice == 4)
+        {
+            cout << "Enter crop name (one word): ";
+            cin >> cropName;
+
+            cout << "Enter quantity in kg: ";
+
+            if (!readInteger(quantity))
+                return;
+
+            if (quantity <= 0)
+            {
+                cout << "Quantity must be greater than zero.\n";
+                continue;
+            }
+
+            CropInfo newCrop(username, cropName, quantity);
+            newCrop.addCrop();
+        }
+        else if (choice == 5)
+        {
+            cout << "============================================================\n";
+            cout << "                 YOUR CROPS FOR SALE\n";
+            cout << "============================================================\n";
+
+            crop.viewMyCrops(username);
+        }
+        else if (choice == 6)
+        {
+            cout << "Enter crop name to update: ";
+            cin >> cropName;
+
+            cout << "Enter new quantity in kg: ";
+
+            if (!readInteger(quantity))
+                return;
+
+            if (quantity <= 0)
+            {
+                cout << "Quantity must be greater than zero.\n";
+                continue;
+            }
+
+            crop.updateCrop(username, cropName, quantity);
+        }
+        else if (choice == 7)
+        {
+            cout << "Enter crop name to remove: ";
+            cin >> cropName;
+
+            crop.removeCrop(username, cropName);
+        }
+
+        else if (choice == 8)
+        {
+            vector<CropInfo> myCrops = crop.getMyCrops(username);
+            if (myCrops.empty())
+            {
+            cout << "You have not listed any crops yet.\n";
+            continue;
+            }
+
+            cout << "\n";
+            cout << "============================================================\n";
+            cout << "                 MANDI RECOMMENDATIONS\n";
+            cout << "============================================================\n";
+            cout << "\n";
+            cout << "  YOUR CROP LISTINGS\n";
+            cout << "  ----------------------------------------------------------\n";
+
+            for (int i = 0; i < myCrops.size(); i++)
+            {
+                cout << "  [" << i + 1 << "] "
+                    << myCrops[i].getCropName()
+                    << " - "
+                    << myCrops[i].getQuantity()
+                    << " kg\n";
+            }
+
+            int cropChoice;
+
+            cout << "\n  Select a crop: ";
+            if (!readInteger(cropChoice))
+                return;
+
+            if (cropChoice < 1 || cropChoice > myCrops.size())
+            {
+                cout << "Invalid crop choice.\n";
+                continue;
+            }
+
+            CropInfo selectedCrop = myCrops[cropChoice - 1];
+            string selectedCropName = selectedCrop.getCropName();
+            int selectedQuantity = selectedCrop.getQuantity();
+
+            Mandi mandi;
+            vector<Mandi> allMandis = mandi.getAllMandis();
+
+            CropMatching matcher;
+            vector<Mandi> matchedMandis = matcher.getMatchedMandis(allMandis,selectedQuantity,selectedCropName);
+
+            ScoreCalculator calculator;
+            vector<double> scores = calculator.calculateScores(matchedMandis,selectedCropName,selectedQuantity);
+
+            MaxHeap heap;
+            vector<Mandi> topMandis = heap.getTopMandis(matchedMandis, scores,3);
+            if (topMandis.empty())
+            {
+                cout << "\nNo suitable mandis found.\n";
+                continue;
+            }
+
+            cout << "\n";
+            cout << "============================================================\n";
+            cout << "                  RECOMMENDED MANDIS\n";
+            cout << "============================================================\n";
+            cout << "\n";
+            for (int i = 0; i < topMandis.size(); i++)
+            {
+                Mandi m = topMandis[i];
+
+                cout << "\n" << i + 1 << ". " << m.getMandiName() << endl;
+                cout << "   Location: " << m.getLocation() << endl;
+                cout << "   Current Capacity: " << m.getCapacity() << " kg" << endl;
+
+                vector<string> crops = m.getCrops();
+                vector<double> prices = m.getBuyingPrices();
+
+                for (int j = 0; j < crops.size(); j++)
+                {
+                    if (crops[j] == selectedCropName)
+                    {
+                        double revenue = selectedQuantity * prices[j];
+
+                        cout << "   Estimated Revenue: Rs. "
+                            << revenue << endl;
+
+                        break;
+                    }
+                }
+            }
+            int mandiChoice;
+
+            cout << "\nEnter mandi choice: ";
+
+            if (!readInteger(mandiChoice))
+                return;
+
+            if (mandiChoice < 1 || mandiChoice > topMandis.size())
+            {
+                cout << "Invalid mandi choice.\n";
+                continue;
+            }
+
+            Mandi selectedMandi = topMandis[mandiChoice - 1];
+
+            cout << "\nYou selected: "<< selectedMandi.getMandiName() << endl;
+            int newCapacity = selectedMandi.getCapacity() - selectedQuantity;
+
+            selectedMandi.setCapacity(newCapacity);
+
+            cout << "Updated Mandi Capacity: " << selectedMandi.getCapacity() << " kg" << endl;   
+
+            bool updated = mandi.updateMandiCapacity(
+            selectedMandi.getUsername(),newCapacity);
+            if (updated)
+            {
+                cout << "Mandi capacity updated successfully.\n";
+
+                bool removed = crop.removeCrop(username, selectedCropName);
+
+               if (removed)
+                {
+                    double sellingPrice = 0;
+
+                    vector<string> crops = selectedMandi.getCrops();
+                    vector<double> prices = selectedMandi.getBuyingPrices();
+
+                    for (int i = 0; i < crops.size(); i++)
+                    {
+                        if (crops[i] == selectedCropName)
+                        {
+                            sellingPrice = prices[i];
+                            break;
+                        }
+                    }
+
+                    Transaction transaction(
+                        username,
+                        selectedMandi.getMandiName(),
+                        selectedCropName,
+                        selectedQuantity,
+                        sellingPrice
+                    );
+
+                    transaction.completeTransaction();
+                    transactionManager.addTransaction(transaction);
+                    cout << "Crop sold successfully.\n";
+                    cout << "Transaction recorded successfully.\n";
+                }
+                else
+                {
+                    cout << "Mandi updated, but crop listing could not be removed.\n";
+                }
+            }
+            else
+            {
+                cout << "Failed to update mandi capacity.\n";
+            }
+        }
+        else if (choice == 9)
+        {
+            cout << "\n";
+            cout << "============================================================\n";
+            cout << "                    MY TRANSACTIONS\n";
+            cout << "============================================================\n";
+            cout << "\n";
+
+            transactionManager.displayAllTransactions();
+        }
+        else if (choice == 10){
+        
+            cout << "Logged out successfully.\n";
+            return;
+        }
+        
+        else
+            cout << "Invalid choice. Select 1 to 8.\n";
+    }
+}
+
+// MANDI MENU
+void mandiMenu(string username)
+{
+    Mandi mandi(username, "", "", "", vector<string>(),
+                vector<double>(), 0);
+
+    int choice;
+
+    while (true)
+    {
+        cout << "\n";
+        cout << "============================================================\n";
+        cout << "                       AGRICONNECT\n";
+        cout << "                Farmer-Mandi Marketplace\n";
+        cout << "============================================================\n";
+        cout << "\n";
+        cout << "                     MANDI DASHBOARD\n";
+        cout << "------------------------------------------------------------\n";
+        cout << "\n";
+        cout << "  1. Add Mandi Details\n";
+        cout << "  2. View Mandi Details\n";
+        cout << "  3. Update Mandi Details\n";
+        cout << "  4. Logout\n";
+        cout << "\n";
+        cout << "------------------------------------------------------------\n";
+        cout << "  Enter your choice: ";
+
+        if (!readInteger(choice))
+            return;
+
+        if (choice == 1)
+        {
+            mandi.addMandi();
+        }
+        else if (choice == 2)
+        {
+            if (!mandi.viewMandi(username))
+                cout << "Mandi details not found. Add them first.\n";
+        }
+        else if (choice == 3)
+        {
+            mandi.updateMandi(username);
+        }
+        else if (choice == 4)
+        {
+            cout << "Logged out successfully.\n";
+            return;
+        }
+        else
+        {
+            cout << "Invalid choice. Select 1 to 4.\n";
+        }
+    }
+}
+
+// MAIN FUNCTION
+int main()
+{
+    UserAuthentication auth;
+    TransactionManager transactionManager;
+
+    auth.loadFarmers();
+    auth.loadMandis();
+
+    int choice, attempts;
+    string username, password;
+
+    while (true)
+    {
+        cout << "\n";
+        cout << "============================================================\n";
+        cout << "                       AGRICONNECT\n";
+        cout << "                Farmer-Mandi Marketplace\n";
+        cout << "============================================================\n";
+        cout << "\n";
+        cout << "                         MAIN MENU\n";
+        cout << "------------------------------------------------------------\n";
+        cout << "\n";
+        cout << "  1. Farmer Login\n";
+        cout << "  2. Mandi Login\n";
+        cout << "  3. Farmer Registration\n";
+        cout << "  4. Mandi Registration\n";
+        cout << "  5. Exit\n";
+        cout << "\n";
+        cout << "------------------------------------------------------------\n";
+        cout << "  Enter your choice: ";
+
+        if (!readInteger(choice))
+            return 0;
+
+        if (choice == 1 || choice == 2)
+        {
+            cout << "Enter username: ";
+            cin >> username;
+
+            cout << "Enter password: ";
+            cin >> password;
+
+            if (choice == 1 && !auth.farmerUsernameExists(username))
+            {
+                cout << "Farmer username not found. Register first.\n";
+                continue;
+            }
+
+            if (choice == 2 && !auth.mandiUsernameExists(username))
+            {
+                cout << "Mandi username not found. Register first.\n";
+                continue;
+            }
+
+            attempts = 3;
+            bool loggedIn = false;
+
+            while (attempts > 0)
+            {
+                if (choice == 1)
+                    loggedIn = auth.farmerLogin(username, password);
+                else
+                    loggedIn = auth.mandiLogin(username, password);
+
+                if (loggedIn)
+                    break;
+
+                attempts--;
+
+                if (attempts > 0)
+                {
+                    cout << "Incorrect password. Attempts left: "
+                         << attempts << "\n";
+                    cout << "Enter password again: ";
+                    cin >> password;
+                }
+                else
+                {
+                    cout << "Too many incorrect attempts.\n";
+                }
+            }
+
+            if (loggedIn)
+            {
+                if (choice == 1)
+                {
+                    cout << "Farmer login successful.\n";
+                    farmerMenu(username);
+                }
+                else
+                {
+                    cout << "Mandi login successful.\n";
+                    mandiMenu(username);
+                }
+            }
+        }
+        else if (choice == 3 || choice == 4)
+        {
+            cout << "Choose username: ";
+            cin >> username;
+
+            cout << "Choose password: ";
+            cin >> password;
+
+            if (choice == 3)
+            {
+                if (auth.registerFarmer(username, password))
+                {
+                    cout << "Farmer registration successful.\n";
+                    farmerMenu(username);
+                }
+                else
+                {
+                    cout << "Username already exists or registration failed.\n";
+                }
+            }
+            else
+            {
+                if (auth.registerMandi(username, password))
+                {
+                    cout << "Mandi registration successful.\n";
+                    mandiMenu(username);
+                }
+                else
+                {
+                    cout << "Username already exists or registration failed.\n";
+                }
+            }
+        }
+        else if (choice == 5)
+        {
+            cout << "Thank you for using AgriConnect!\n";
+            break;
+        }
+        else
+        {
+            cout << "Invalid choice. Select 1 to 5.\n";
+        }
+    }
+
+    return 0;
+}
+

@@ -1,2 +1,0 @@
-farmer1@gov.in rice 500
-pp crop_new 50

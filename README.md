@@ -1,131 +1,196 @@
-AGRICONNECT - EXISTING FULL-STACK PROJECT
-=========================================
+# AgriConnect – Smart Agricultural Marketplace System
 
-This archive preserves the original AgriConnect project and its C++ classes,
-Express API, browser dashboards, and text-file data storage. No replacement
-project was created.
+## Project Title and Brief Description
 
-STRUCTURE
----------
-public/                                  Browser frontend files (HTML/CSS/JS)
-cpp/api.cpp                              C++ command-line API adapter
-cpp/main.cpp                             Original terminal application entry point
-cpp/include/ and cpp/src/                Existing C++ classes and implementations
-data/*.txt                               Existing text-file data
-build/                                   Generated C++ executable (not committed)
-server.js                                Express API + static frontend server
+AgriConnect is a digital platform that connects farmers with mandis, helping farmers find suitable markets for their crops based on buying prices, available capacity, and transportation costs.
 
-REQUIREMENTS (macOS + VS CODE)
-------------------------------
-- Xcode Command Line Tools (provides clang++)
-- Node.js and npm
-- VS Code (optional editor)
+Built using C++ and web technologies, the system provides farmer and mandi dashboards, profit-based recommendations, crop management, and order placement.
 
-BUILD AND RUN
--------------
-1. Extract the ZIP and open the AgriConnect folder in VS Code.
-2. Open Terminal in the project folder.
-3. Install the Node dependencies:
+## Problem Statement / Objective
 
-   npm install
+### Problem Statement
 
-4. Start the server (this automatically compiles the C++ API before launch):
+Farmers often face difficulties in finding suitable buyers, comparing prices at different mandis, maintaining harvest records, and calculating their expected profit. Traditional methods involve manual record keeping and limited organized market information, making it difficult for farmers to decide where to sell their crops.
 
-   npm start
+### Objective
 
-   The build command intentionally excludes cpp/main.cpp because it is the
-   original terminal application's separate entry point and contains main(). The
-server serves browser files from public/ and runs the C++ program with data/ as
-its working directory so existing text-file paths continue to work.
+The main objective of AgriConnect is to provide a centralized digital platform that connects farmers with mandis and simplifies the process of selecting suitable selling options.
 
-5. Open:
+The system aims to:
 
-   http://localhost:3000
+- Manage farmer, mandi, and crop information.
+- Match crops with suitable mandis.
+- Compare offered prices and available capacity.
+- Generate mandi recommendations based on estimated net profit.
+- Calculate transportation costs using road distances.
+- Allow farmers to place orders and maintain transaction records.
+- Demonstrate the practical application of Data Structures and Object-Oriented Programming.
+
+## Team Members
+
+**Team Name:** Team Geek Coders  
+**Team ID:** T068
+
+| Team Member | Contribution |
+|---|---|
+| Lavanya Rawat | User Authentication |
+| Kumud Singh | Farmer & Mandi Management |
+| Pranavi Thuwal | Recommendation System |
+| Rishika Gupta | Transaction & Record Management |
+
+## Technologies / Tools Used
+
+### Programming Languages
+- C++
+- JavaScript
+- HTML
+- CSS
+
+### Frameworks and Tools
+- Node.js
+- Express.js
+- Visual Studio Code
+- Git and GitHub
+- GCC / G++ compiler
+
+### Data Storage
+- Text-file-based storage
+
+## Data Structures and Algorithms Used
+
+- **Hash Maps:** Managing and accessing structured information.
+- **Graphs:** Representing road networks using adjacency lists.
+- **Priority Queues:** Efficiently selecting the next closest location in Dijkstra's algorithm.
+- **Dijkstra's Algorithm:** Finding shortest road distances between farmers and mandis.
+- **Sorting:** Ranking mandi recommendations by estimated net profit.
+- **Queues and Linked Lists:** Used in the underlying C++ implementation.
+
+## Key Features
+
+### Farmer Module
+- Farmer registration and login.
+- Profile management.
+- Adding and managing crop details.
+- Viewing mandi recommendations.
+- Comparing estimated revenue, transportation costs, and net profit.
+- Placing orders and viewing order history.
+
+### Mandi Module
+- Mandi registration and login.
+- Profile management.
+- Managing crop information and buying prices through the supported management flow.
+- Maintaining available capacity.
+- Viewing and managing orders.
+
+### Recommendation System
+
+The recommendation system identifies suitable mandis based on crop compatibility, buying price, available capacity, and transportation costs.
+
+It uses a weighted adjacency-list road graph and Dijkstra's shortest-path algorithm with a min-priority queue.
+
+**Profit Calculation:**
+
+- Revenue = Quantity × Buying Price
+- Transportation Cost = Distance × Transport Rate
+- Net Profit = Revenue − Transportation Cost
+
+The initial transportation rate is assumed to be ₹18/km. Recommendations are sorted by descending net profit, with shorter distance used as a tie-breaker.
+
+For locations not present in the predefined road graph, the system can use estimated distances from a built-in city coordinate table. These are estimates, not live road distances.
+
+### Capacity and Order Management
+- Tracks total, occupied, and available mandi capacity.
+- Prevents orders from exceeding available capacity.
+- Maintains order and transaction records using text files.
+
+### Data Handling
+- Case-insensitive matching for user IDs, crop names, and city names.
+- Handles blank and malformed text-file records.
+- Normalizes text-file line endings.
+- Rejects IDs and passwords containing spaces.
+
+## System Architecture
+
+AgriConnect follows a modular architecture:
+
+1. **Frontend:** HTML, CSS, and JavaScript provide the landing page and separate farmer and mandi dashboards.
+2. **Backend:** Node.js and Express.js handle API requests and communication with the C++ application.
+3. **C++ Application:** Handles core logic, user management, recommendations, road graph operations, and transactions.
+4. **Data Storage:** Text files store user, crop, mandi, capacity, contact, and order information.
+
+The Express backend executes the compiled C++ API and processes its JSON output.
+
+## Project Structure
+
+```text
+AgriConnect/
+│
+├── public/             # Frontend HTML, CSS and JS
+├── cpp/
+│   ├── api.cpp
+│   ├── main.cpp
+│   ├── include/        # Header files
+│   └── src/            # C++ implementations
+│
+├── data/               # Local text-file databases
+├── build/              # Compiled executable
+├── server.js           # Express server
+├── package.json
+├── package-lock.json
+├── .gitignore
+└── README.md
+```
+
+## Installation and Execution
+
+### Prerequisites
+- C++ compiler supporting C++17.
+- Node.js and npm.
+- Git (optional).
+
+### Steps
+
+**1. Clone the repository**
+
+```bash
+git clone https://github.com/thuwal-p/AgriConnect.git
+cd AgriConnect
+```
+
+**2. Install dependencies**
+
+```bash
+npm install
+```
+
+**3. Start the application**
+
+```bash
+npm start
+```
+
+The start command automatically compiles the C++ API and launches the Express server.
+
+Open the application at:
+
+```text
+http://localhost:3000
+```
 
 Health check:
-   http://localhost:3000/api/health
 
-REBUILD AFTER C++ CHANGES
--------------------------
-Stop the server, then run npm start again. The start script rebuilds the
-C++ API automatically. On Windows, the server selects build/AgriConnectAPI.exe;
-on macOS/Linux it selects build/AgriConnectAPI.
+```text
+http://localhost:3000/api/health
+```
 
-RECOMMENDATION IMPLEMENTATION
------------------------------
-- Uses an adjacency-list road graph and Dijkstra with a min-priority queue.
-- The initial road graph contains predefined Uttarakhand / North India routes.
-- Locations are matched by their normalized city name. If the farmer or mandi
-  location is not represented in the road graph, that mandi is omitted rather
-  than assigned a fabricated distance.
-- Eligible mandis must list the requested crop and have enough available
-  capacity.
-- Revenue = quantity (quintals) * buying price (₹/quintal).
-- Transportation is estimated as shortest road distance * ₹18 per kilometre.
-  ₹18/km is an initial project assumption, not a live quote; adjust the
-  transportRate constant in api.cpp when a better local rate is available.
-- Net profit = revenue - estimated transport cost. Results are sorted by net
-  profit, then shorter road distance when profits are effectively equal.
+## Limitations and Future Scope
 
-CAPACITY
---------
-The mandi_details.txt capacity field continues to represent available capacity,
-so existing order placement and recommendation checks remain compatible.
-capacity_details.txt stores total and occupied capacity for registered/updated
-mandis. Available capacity is total minus occupied. Existing records without
-capacity_details.txt are treated as their existing capacity available and zero
-occupied until the mandi edits capacity or places an order.
+- Text files are currently used instead of a centralized database.
+- Passwords are stored in plain text; the current implementation is intended as a demonstration prototype.
+- Road distances and transportation rates are predefined or estimated.
+- Online payment, delivery tracking, order cancellation, and refunds are not implemented.
+- Future improvements include database integration, secure authentication, live map routing, real-time market prices, and cloud deployment.
 
-CONTACT DETAILS
----------------
-contact_details.txt stores the farmer phone and mandi contact-person / phone
-fields by account ID. New registrations write these fields, and profiles load
-them from this file. Names and locations continue using underscore-separated
-records to remain compatible with the existing data format.
+## Conclusion
 
-DATA AND SECURITY NOTES
------------------------
-- The project uses local text files and plain-text credentials, as in the
-  original demo. Do not use real passwords or deploy this prototype publicly.
-- Back up farmers.txt, mandis.txt, farmer_details.txt, mandi_details.txt,
-  crops.txt, orders.txt, contact_details.txt and capacity_details.txt before
-  testing account creation, orders or capacity changes.
-- Crop listing and order history remain stored in the existing files.
-- The original terminal application and existing transaction module are kept.
-- Mandi crop and price editing beyond the original registration flow is not
-  implemented by this modification.
-- Transactions use the existing order-file workflow; payment, delivery,
-  cancellation and refunds are outside this prototype.
-- Road distances are predefined estimates, not live map routing.
-
-CHANGES IN THIS FIX
--------------------
-- All .txt readers are now line-based and tolerate CRLF, a UTF-8 BOM, blank and
-  malformed rows (previously one bad row stopped every later record from loading).
-- Crop names are matched case-insensitively (Wheat = wheat) in recommendations and orders.
-- Locations missing from the road graph (e.g. Mumbai, Nainital, Haldwani "hld") use an
-  estimated distance (straight-line x 1.3) from a built-in city table and are labelled
-  "Est. distance". Cities unknown to both tables are still skipped.
-- Data files are normalised to LF line endings with a trailing newline, so new
-  registrations never glue onto the previous record.
-- server.js no longer serves .txt/.cpp/.h/.json files (farmers.txt held passwords).
-- IDs/passwords with spaces are rejected at registration.
-- Dark-green redesign; farmer dashboard has a farmer-in-field banner and the mandi
-  dashboard a mandi-market banner.
-
-CITY DROPDOWN (nearest major city)
-----------------------------------
-Registration now asks for the "Nearest major city" from a dropdown (list in script.js,
-matching the coordinate table in api.cpp). The city is stored as the location and used for
-distance. The optional village/town name is stored in village_details.txt and shown on the
-profile. To add a city: add it to the table in api.cpp AND to CITIES in script.js.
-
-CASE-INSENSITIVITY AND LOSS WARNING
------------------------------------
-- IDs (farmer/mandi usernames), crop names and city names are case-insensitive
-  everywhere (login, registration duplicate check, add/update/remove crop,
-  recommendations, orders). IDs are stored in lower case. Passwords stay case-sensitive.
-- If transport cost exceeds revenue (negative net profit), the recommendation row is
-  labelled "Transport cost exceeds revenue" and shows "Net loss". If every mandi is a
-  loss, a warning banner appears. Placing a loss-making order asks for extra confirmation.
-  The best-profit highlight is only given to a profitable mandi.
+AgriConnect demonstrates the use of Data Structures, Algorithms, Object-Oriented Programming, and web technologies to address challenges in agricultural marketing. By connecting farmers and mandis and providing profit-based recommendations, the system aims to make crop-selling decisions more organized and informed.
